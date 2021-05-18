@@ -2,7 +2,7 @@
 module.exports = {
   title: '本地环境',
   // baseApi: 'http://jsonplaceholder.typicode.com',
-  baseApi: '/b/',
+  baseApi: '/c/',
   // 钉钉公司ID
   corpId: 'ding4acdfb4fff883932',
   // H5端调试用

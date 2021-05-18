@@ -1,98 +1,113 @@
 <template>
-  <div class="content">
-    <van-cell-group>
-      <van-cell title="单元格"
-                value="内容" />
-      <van-cell title="单元格"
-                value="内容"
-                label="描述信息" />
-      <van-cell title="单元格"
-                value="内容"
-                label="描述信息" />
-      <van-cell title="单元格"
-                value="内容"
-                label="描述信息" />
-    </van-cell-group>
-  </div>
+  <div style="margin:100px 15px 0px 15px">
+    <van-form @submit="onSubmit">
+      <van-field v-for="item in key_value"
+                 :key="item.id"
+                 v-model="item.value"
+                 clickable
+                 label="item.key" />
+      <van-field v-model="state.value"
+                 readonly
+                 clickable
+                 name="picker"
+                 label="申请类型"
+                 placeholder="点击选择申请类型"
+                 @click="state.showPicker = true" />
+      <van-field v-model="state.username"
+                 name="用户名"
+                 label="用户名"
+                 placeholder="用户名"
+                 :rules="[{ required: true, message: '请填写用户名' }]" />
+      <van-field v-model="state.password"
+                 type="password"
+                 name="密码"
+                 label="密码"
+                 placeholder="密码"
+                 :rules="[{ required: true, message: '请填写密码' }]" />
+      <div style="margin: 16px;">
+        <van-button round
+                    block
+                    type="primary"
+                    native-type="submit">
+          提交
+        </van-button>
+      </div>
+    </van-form>
 
+    <van-popup v-model:show="state.showPicker"
+               position="bottom">
+      <van-picker :columns="columns"
+                  :columns-field-names="customFieldName"
+                  @confirm="onConfirm"
+                  @cancel="state.showPicker = false" />
+    </van-popup>
+  </div>
 </template>
 
 <script>
 import { ref, onBeforeMount, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
-import { getAuthCode } from '@/util/dingtalk'
+import { queryApprovalProcess, queryTemplateDetails, goTemplate } from '@/api/kaoqin.js'
 
 // @ is an alias to /src
 
 export default {
   name: 'Home',
   setup() {
-    const store = useStore()
-    const authCode = ref('')
-    const code = reactive({})
-    // 钉钉环境登录获取用户信息
-    // eslint-disable-next-line no-unused-vars
-    const HomegetAuthCode = () => {
-      console.log(process.env.NODE_ENV)
-      // 获取钉钉临时授权码
-      console.log(process.env.VUE_APP_CORPID)
-      getAuthCode(process.env.VUE_APP_CORPID)
-        .then(rew => {
-          console.log(rew)
-          // 存入store
-          store.state.authCode = rew.code
-          authCode.value = rew.code
-          code.authCode = rew.code
-          store
-            .dispatch('dduserlogin', code)
-            .then(res => {
-              console.log(`AccessToken是${res.result.accessToken}`)
-              console.log(res)
-              store.state.userName = res.result.name
-              store.state.userId = res.result.userId
-              store.state.mobile = res.result.mobile
-              store.state.avatar = res.result.avatar
-              localStorage.setItem('accessToken', res.result.accessToken)
-            })
-            .catch(err => {
-              console.log(err)
-            })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    let key_value = ref([])
+    let columns = ref([])
+    const picker = ref(null)
+    const customFieldName = {
+      text: 'name'
     }
-    // H5环境获取用户信息(之前需要跑一次钉钉环境获取信息)
-    // eslint-disable-next-line no-unused-vars
-    const h5GetUser = () => {
-      const userId = process.env.VUE_APP_USERID
-      const accessToken = process.env.VUE_APP_ACCESSTOKEN
-      const data = { userId, accessToken }
-      console.log(data)
-      store
-        .dispatch('forceGetUserInfo', data)
-        .then(res => {
-          console.log(`强制获取${JSON.stringify(res)}`)
-          store.state.userName = res.result.name
-          store.state.userId = res.result.userId
-          store.state.mobile = res.result.mobile
-          store.state.avatar = res.result.avatar
-          localStorage.setItem('accessToken', res.result.accessToken)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-
-    onBeforeMount(() => {
-      // HomegetAuthCode();
-      h5GetUser()
+    const state = reactive({
+      username: '',
+      password: ''
     })
-    onMounted(() => {})
-
-    return {
-      authCode
+    const onConfirm = value => {
+      console.log(`1-----${value}`)
+      console.log(`2-----${value.name}`)
+      state.value = value.name
+      state.showPicker = false
     }
+    const onSubmit = values => {
+      console.log('submit', values)
+    }
+    // 获取申请的类型
+    const queryAProcess = () => {
+      console.log('获取查询审批流程')
+      // let devd = ['1', '2', '3']
+      // columns.value = devd
+      queryApprovalProcess()
+        .then(res => {
+          console.log(res)
+          columns.value = res.result
+        })
+        .catch(err => console.log(err))
+    }
+    // 获取申请类型的模板
+    const getTemplateDetails = () => {
+      let param = {
+        id: 17
+      }
+      queryTemplateDetails(param)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    onBeforeMount(() => {
+      queryAProcess()
+    })
+    onMounted(() => {
+      // queryAProcess()
+      getTemplateDetails()
+    })
+    return { onSubmit, state, columns, onConfirm, key_value, customFieldName, getTemplateDetails }
   }
 }
 </script>
+<style scoped>
+</style>

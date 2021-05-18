@@ -1,6 +1,14 @@
 <template>
   <div>
-
+    <van-grid clickable
+              :column-num="2">
+      <van-grid-item icon="home-o"
+                     text="发起审批"
+                     to="/" />
+      <van-grid-item icon="search"
+                     text="233"
+                     url="https://www.baidu.com" />
+    </van-grid>
   </div>
 </template>
 
@@ -14,11 +22,7 @@ export default {
     const msg = ref('vue3.0')
     const list = ref([])
     const store = useStore()
-    // axios通信
-    getUser().then(res => {
-      console.log(res, 're')
-      list.value = res
-    })
+
     const name = computed(() => store.state.userNmae)
     const handleBtn = () => {
       // 留个模板好记

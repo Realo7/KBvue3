@@ -4,6 +4,11 @@ import { login, getInfo } from '@/api/user';
 export default createStore({
   state: {
     userNmae: 'vue3.0',
+    authCode:'',
+    userid: '',
+    username: '',
+    avatar: '',
+    mobile: '',
   },
   mutations: {
     getUserNmae(state, data) {

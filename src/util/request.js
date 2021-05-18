@@ -3,6 +3,7 @@
 */ 
 import axios from 'axios'
 import { baseApi } from './../config'
+import { Notify } from 'vant';
 
 const service = axios.create({
   baseURL: baseApi,
@@ -15,6 +16,7 @@ service.interceptors.request.use(config => {
   return config
 },error => {
   console.log(error);
+  Notify('网络请求出现问题');
   return Promise.reject(error)
 })
 
@@ -28,6 +30,7 @@ service.interceptors.response.use(response => {
     return Promise.resolve(res)
   }
 },error =>{
+  Notify('网络返回出现问题');
   return Promise.reject(error)
 })
 export default service

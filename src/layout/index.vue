@@ -20,7 +20,7 @@ import TabBar from '../components/TabBar/TabBar.vue'
 export default {
   name: 'AppLayout',
   components: {
-    TabBar,
+    TabBar
   },
   setup() {
     // tabbar选项菜单项，可以动态生成
@@ -29,29 +29,32 @@ export default {
         {
           title: '首页',
           to: {
-            name: 'Home',
+            name: 'Home'
           },
-          icon: 'home-o',
+          icon: 'home-o'
         },
         {
           title: '我的',
           to: {
-            name: 'Mine',
+            name: 'Mine'
           },
-          icon: 'user-o',
-        },
-      ],
+          icon: 'user-o'
+        }
+      ]
     })
     const handleChange = value => {
       console.log(value)
     }
     return {
       state,
-      handleChange,
+      handleChange
     }
-  },
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+.layout-content {
+  margin-bottom: 1.4rem;
+}
 </style>

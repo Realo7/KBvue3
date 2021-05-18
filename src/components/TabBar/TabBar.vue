@@ -25,7 +25,7 @@ export default {
   },
   emits: ['chang'],
   setup(props, context) {
-    console.log(props.data, 'props')
+    // console.log(props.data, 'props')
     const active = ref(0)
     const handleChange = value => {
       context.emit('chang', value)
