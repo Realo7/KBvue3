@@ -17,6 +17,14 @@ export function queryTemplateDetails(data) {
     params: data,
   });
 }
+// 查询是否存在报销单据
+export function queryTemplateTable(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findTemplateTable',
+    method: 'post',
+    params: data,
+  });
+}
 
 // 发起审批-发起审批
 export function goTemplate(data) {

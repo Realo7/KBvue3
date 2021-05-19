@@ -6,6 +6,7 @@
 import { ref, onBeforeMount, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { getAuthCode } from '@/util/dingtalk'
+import { useRouter } from 'vue-router'
 
 // @ is an alias to /src
 
@@ -13,6 +14,7 @@ export default {
   name: 'Home',
   setup() {
     const store = useStore()
+    const router = useRouter()
     const code = reactive({})
     // 钉钉环境登录获取用户信息
     // eslint-disable-next-line no-unused-vars
@@ -44,6 +46,11 @@ export default {
         .catch(err => {
           console.log('进入H5虚拟环境')
           // 如果不是在钉钉环境的化进入H5虚拟环境
+          // 进入H5的登录界面
+          // 测试环境注释掉
+          // router.push({
+          //   path: '/h5login'
+          // })
           h5GetUser()
         })
     }

@@ -17,6 +17,11 @@ const routes = [
         component: () => import('@/views/Home.vue'),
       },
       {
+        path: '/goApproval',
+        name: 'goApproval',
+        component: () => import('@/views/approval/goApproval.vue'),
+      },
+      {
         path: '/mine',
         name: 'Mine',
         component: () => import('@/views/mine.vue'),
@@ -25,6 +30,11 @@ const routes = [
         path: '/detail/:id',
         name: 'Detail',
         component: () => import('@/views/Detail.vue'),
+      },
+      {
+        path: '/h5login',
+        name: 'h5login',
+        component: () => import('@/views/login/h5login.vue'),
       },
     ],
   },
