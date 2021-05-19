@@ -6,9 +6,11 @@ export default createStore({
     userNmae: 'vue3.0',
     authCode:'',
     userid: '',
-    username: '',
+    username: '',//钉钉返回的用户名
     avatar: '',
     mobile: '',
+    qhid:'',
+    qhusername:''//琦航对应的用户名
   },
   mutations: {
     getUserNmae(state, data) {
@@ -17,7 +19,6 @@ export default createStore({
   },
   actions: {
     async forceGetUserInfo(state, data) {
-      console.log(`参数${JSON.stringify(data)}`);
       const rew = await getInfo(data)
         .then(
           (res) => {

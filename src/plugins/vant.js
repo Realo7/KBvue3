@@ -3,14 +3,16 @@
 */
 import {
   Button, Tabbar, TabbarItem, Cell, CellGroup,Picker, Form, Popup, 
-  Field,Notify,Grid, GridItem,Empty,Swipe, SwipeItem,DatetimePicker
+  Field,Notify,Grid, GridItem,Empty,Swipe, SwipeItem,DatetimePicker,
+  Col, Row,Tab, Tabs,NoticeBar,Dialog,Toast
 } from 'vant';
 
 const pluginsVant = [
   Empty,Button,Tabbar,TabbarItem,Cell,
   CellGroup,Form,Popup,Field,Picker,
   Notify,Grid, GridItem,Swipe, SwipeItem,
-  DatetimePicker
+  DatetimePicker,Col, Row,Tab, Tabs ,NoticeBar,
+  Dialog,Toast
 ];
 export const vantPlugins = {
   install(vm) {

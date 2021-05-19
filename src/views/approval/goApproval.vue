@@ -68,7 +68,7 @@ export default {
     // let maxDate = ref('')
     let currentDate = ref()
     watch(currentDate, (a, b) => {
-      console.log('侦听探针' + JSON.stringify(a) + '旧的' + JSON.stringify(b))
+      console.log('侦听探针' + a + '旧的' + b)
     })
     let selectedindex = ref()
     let key_value = ref([])
@@ -88,15 +88,12 @@ export default {
 
     //点击时间表单框体触发
     const dateclick = (item, index) => {
-      console.log(`撒打撒打撒打撒${JSON.stringify(item)}+${index}`)
       console.log(key_value.value[index])
       selectedindex.value = index
       state.showPicker2 = true
     }
     //选择申请类型弹窗确认
     const onConfirm = value => {
-      console.log(`1-----${JSON.stringify(value)}`)
-      console.log(`2-----${value.name}`)
       kindPicker.name = value.name
       kindPicker.pickerid = value.formTemplateId
       state.showPicker1 = false

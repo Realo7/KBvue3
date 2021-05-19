@@ -22,6 +22,11 @@ const routes = [
         component: () => import('@/views/approval/goApproval.vue'),
       },
       {
+        path: '/myApproval',
+        name: 'myApproval',
+        component: () => import('@/views/approval/myApproval.vue'),
+      },
+      {
         path: '/mine',
         name: 'Mine',
         component: () => import('@/views/mine.vue'),
@@ -35,6 +40,11 @@ const routes = [
         path: '/h5login',
         name: 'h5login',
         component: () => import('@/views/login/h5login.vue'),
+      },
+      {
+        path: '/ddqhbind',
+        name: 'ddqhbind',
+        component: () => import('@/views/login/ddqhBind.vue'),
       },
     ],
   },

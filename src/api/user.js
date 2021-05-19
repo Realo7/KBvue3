@@ -19,3 +19,19 @@ export function getInfo(data) {
     params: data,
   });
 }
+// 钉钉登录-绑定用户
+export function bindUserwithDD(data) {
+  return axios({
+    url: '/api/oa/Dingtalk/bindingUsers',
+    method: 'post',
+    params: data,
+  });
+}
+// 钉钉登录-更新用户信息
+export function updateUserwithDD(data) {
+  return axios({
+    url: '/api/oa/Dingtalk/updateUser',
+    method: 'post',
+    params: data,
+  });
+}

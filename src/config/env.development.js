@@ -1,12 +1,15 @@
 // 本地环境配置
 module.exports = {
   title: '本地环境',
-  // baseApi: 'http://jsonplaceholder.typicode.com',
   baseApi: '/c/',
   // 钉钉公司ID
   corpId: 'ding4acdfb4fff883932',
   // H5端调试用
-  accessToken: 'f4495b47800231658d9bf59804f6ea8a',
+  accessToken: '2a95308b8c58337289392c5e4e4052b2',
   // 钉钉userId调试用
   userId: '28590759431053374',
+  //
+  name:'胡睿',
+  avatar:'https://static-legacy.dingtalk.com/media/lALPBEY8fqR_zbrM-sz6_250_250.png',
+  mobile:'18068711360',
 };

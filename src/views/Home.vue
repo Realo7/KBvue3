@@ -15,7 +15,7 @@
                      to="/goApproval" />
       <van-grid-item icon="sign"
                      text="我的审批"
-                     url="https://www.baidu.com" />
+                     to="/myApproval" />
       <van-grid-item icon="completed"
                      text="我的审批记录"
                      url="https://www.baidu.com" />

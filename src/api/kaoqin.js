@@ -34,3 +34,11 @@ export function goTemplate(data) {
     params: data,
   });
 }
+// 发起审批-我的审批
+export function myApproval(data) {
+  return axios({
+    url: '/api/oa/waitingForMyApproval/list',
+    method: 'post',
+    params: data,
+  });
+}

@@ -7,7 +7,9 @@ import { ref, onBeforeMount, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { getAuthCode } from '@/util/dingtalk'
 import { useRouter } from 'vue-router'
-
+import { bindUserwithDD } from '@/api/user.js'
+import { Dialog } from 'vant'
+import config from '@/config/index.js'
 // @ is an alias to /src
 
 export default {
@@ -21,7 +23,6 @@ export default {
     const HomegetAuthCode = () => {
       console.log(process.env.NODE_ENV)
       // 获取钉钉临时授权码
-      console.log(process.env.VUE_APP_CORPID)
       getAuthCode(process.env.VUE_APP_CORPID)
         .then(rew => {
           console.log(rew)
@@ -33,11 +34,12 @@ export default {
             .then(res => {
               console.log(`AccessToken是${res.result.accessToken}`)
               console.log(res)
-              store.state.userName = res.result.name
-              store.state.userId = res.result.userId
+              store.state.username = res.result.name
+              store.state.userid = res.result.userId
               store.state.mobile = res.result.mobile
               store.state.avatar = res.result.avatar
               localStorage.setItem('accessToken', res.result.accessToken)
+              console.log(`app.vue里面获取${store}`)
             })
             .catch(err => {
               console.log(err)
@@ -65,24 +67,62 @@ export default {
         .dispatch('forceGetUserInfo', data)
         .then(res => {
           console.log(`强制获取${JSON.stringify(res)}`)
-          store.state.userName = res.result.name
-          store.state.userId = res.result.userId
-          store.state.mobile = res.result.mobile
-          store.state.avatar = res.result.avatar
+          store.state.username = config.name
+          store.state.userid = config.userId
+          store.state.mobile = config.mobile
+          store.state.avatar = config.avatar
+
           localStorage.setItem('accessToken', res.result.accessToken)
+          console.log(store.state)
+          // querrybind(res.result.mobile, res.result.userid)
+          //上线修改
+          querrybind(18068711360, config.userId)
         })
         .catch(err => {
           console.log(err)
         })
     }
 
+    // 查询该手机号是否绑定用户
+    const querrybind = (mobile, userId) => {
+      let data = { mobile, appId: userId }
+      bindUserwithDD(data)
+        .then(res => {
+          console.log(res)
+          //如果已经绑定过，把琦航账户的id和username存到vuex和localstorage
+          store.state.qhusername = res.result.userName
+          localStorage.setItem('userName', res.result.userName)
+          store.state.qhid = res.result.id
+          localStorage.setItem('qhid', res.result.id)
+          if (res.code !== 200) {
+            Dialog.confirm({
+              title: '提示',
+              message: res.msg,
+              confirmButtonText: '前往手动绑定',
+              cancelButtonText: '返回联系管理'
+            })
+              .then(() => {
+                // on confirm
+                router.push({
+                  path: '/ddqhbind'
+                })
+              })
+              .catch(() => {
+                location.reload()
+              })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
     onBeforeMount(() => {
       // 进入APP时获取信息,先检测是否钉钉环境
       HomegetAuthCode()
     })
     onMounted(() => {})
 
-    return {}
+    return { querrybind }
   }
 }
 </script>
