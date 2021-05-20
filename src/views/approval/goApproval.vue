@@ -13,21 +13,21 @@
     </van-empty>
     <van-form @submit="onSubmit">
       <div v-show="key_value!=''">
-        <van-field v-model="state.value"
+        <van-field v-model="CompanyPicker.companyName"
                    readonly
                    clickable
                    name="company"
                    label="选择公司"
                    placeholder="点击选择公司"
                    @click="state.showCompany = true" />
-        <van-field v-model="state.value"
+        <van-field v-model="groupPicker.name"
                    readonly
                    clickable
                    name="Group"
                    label="选择部门"
                    placeholder="点击选择部门"
                    @click="state.showGroup = true" />
-        <van-field v-model="state.value"
+        <van-field v-model="memberPicker.userName"
                    readonly
                    clickable
                    name="Member"
@@ -60,21 +60,24 @@
     <van-popup v-model:show="state.showMember"
                position="bottom">
       <van-picker :columns="memberColumns"
-                  @confirm="onConfirm"
+                  :columns-field-names="customMemFieldName"
+                  @confirm="onMemberConfirm"
                   @cancel="state.showMember = false" />
     </van-popup>
     <!-- 选择部门 -->
     <van-popup v-model:show="state.showGroup"
                position="bottom">
       <van-picker :columns="groupColumns"
-                  @confirm="onConfirm"
+                  :columns-field-names="customGroFieldName"
+                  @confirm="onGroupConfirm"
                   @cancel="state.showGroup = false" />
     </van-popup>
     <!-- 选择公司 -->
     <van-popup v-model:show="state.showCompany"
                position="bottom">
       <van-picker :columns="companyColumns"
-                  @confirm="onConfirm"
+                  :columns-field-names="customComFieldName"
+                  @confirm="onCompanyConfirm"
                   @cancel="state.showCompany = false" />
     </van-popup>
     <van-popup v-model:show="state.showPicker1"
@@ -111,14 +114,26 @@
 <script>
 import { ref, onBeforeMount, onMounted, reactive, nextTick, computed, watch } from 'vue'
 import { useStore } from 'vuex'
-import { queryApprovalProcess, queryTemplateDetails, goTemplate, queryTemplateTable } from '@/api/kaoqin.js'
+import { useRouter } from 'vue-router'
+import { Notify, Dialog } from 'vant'
+import {
+  findUserBy,
+  findDepartmentBy,
+  findCompany,
+  queryApprovalProcess,
+  queryTemplateDetails,
+  goTemplate,
+  queryTemplateTable
+} from '@/api/kaoqin.js'
 import moment from 'moment'
+import { getUser } from '../../api/home'
 // @ is an alias to /src
 
 export default {
   name: 'goApproval',
   setup() {
     const store = useStore()
+    const router = useRouter()
     // let isread = ref(false)
     let minDate = ref(new Date())
     // let maxDate = ref('')
@@ -137,12 +152,24 @@ export default {
     const customFieldName = {
       text: 'name'
     }
+    const customComFieldName = {
+      text: 'companyName'
+    }
+    const customGroFieldName = {
+      text: 'name'
+    }
+    const customMemFieldName = {
+      text: 'userName'
+    }
     const kindPicker = reactive({
       name: '',
       pickerid: 0,
       id: 0,
       activitiKey: ''
     })
+    let CompanyPicker = reactive({})
+    const groupPicker = reactive({})
+    const memberPicker = reactive({})
     const state = reactive({
       showCompany: false,
       showGroup: false,
@@ -176,7 +203,40 @@ export default {
       }
     }
     //查询公司
-
+    const getCompany = () => {
+      findCompany()
+        .then(res => {
+          console.log(res)
+          companyColumns.value = res.result
+        })
+        .catch(err => {
+          console.log(err)
+          Notify({ type: 'warning', message: '获取公司列表失败' })
+        })
+    }
+    //通过选择的公司ID查询部门
+    const getGroup = id => {
+      findDepartmentBy({ companyId: id })
+        .then(res => {
+          console.log(res)
+          groupColumns.value = res.result
+        })
+        .catch(err => {
+          console.log(err)
+          Notify({ type: 'warning', message: '获取公司列表失败' })
+        })
+    }
+    const getUser = id => {
+      findUserBy({ departmentId: id })
+        .then(res => {
+          memberColumns.value = res.result
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+          Notify({ type: 'warning', message: '获取人员列表失败' })
+        })
+    }
     //点击时间表单框体触发
     const dateclick = (item, index) => {
       console.log(key_value.value[index])
@@ -199,6 +259,7 @@ export default {
       kindPicker.activitiKey = value.activitiKey
       kindPicker.pickerid = value.formTemplateId
       kindPicker.id = value.id
+      console.log('----------------' + JSON.stringify(kindPicker))
       state.showPicker1 = false
       if (kindPicker.pickerid !== 0) {
         getTemplateDetails()
@@ -227,18 +288,29 @@ export default {
       formData.append('key', kindPicker.activitiKey)
       formData.append('formTemplateId', kindPicker.pickerid)
       formData.append('detailed', JSON.stringify(key_value.value))
+      //报销表单
       formData.append('table', JSON.stringify([{}]))
-      formData.append('applyCompanyName', '宁德思客琦智能装备有限公司')
-      formData.append('applyDepartmentName', '软件研发部')
-      formData.append('applyUserName', '申请人')
+      formData.append('applyCompanyName', CompanyPicker.companyName)
+      formData.append('applyDepartmentName', groupPicker.name)
+      formData.append('applyUserName', memberPicker.userName)
 
-      console.log(fashe)
       console.log(formData)
       goTemplate(formData)
         .then(res => {
-          console.log(res)
+          console.log('@@@@@@@@@@@@@@@@' + res)
+          //提交成功处理
+          Dialog.alert({
+            title: '提示',
+            message: '提交成功,跳转主页',
+            closeOnPopstate: false
+          }).then(() => {
+            router.replace({
+              url: '/'
+            })
+          })
         })
         .catch(err => {
+          Notify({ type: 'warning', message: '提交错误,请检查网络' })
           console.log(err)
         })
     }
@@ -248,7 +320,10 @@ export default {
         .then(res => {
           columns.value = res.result
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          Notify({ type: 'warning', message: '获取申请类型错误' })
+          console.log(err)
+        })
     }
     //获取是否存在报销单据
     const gettemplateTable = () => {
@@ -274,16 +349,53 @@ export default {
           key_value.value = res.result
           gettemplateTable()
         })
+
         .catch(err => {
-          Notify({ type: 'warning', message: '获取申请类型模板错误' })
+          Notify({ type: 'warning', message: '获取申请模板错误' })
           console.log(err)
         })
     }
+    const onCompanyConfirm = value => {
+      console.log(value)
+      CompanyPicker.companyName = value.companyName
+      CompanyPicker.companyAddress = value.companyAddress
+      CompanyPicker.id = value.id
+      CompanyPicker.companyCode = value.companyCode
+      console.log('======' + CompanyPicker)
+      console.log('======' + JSON.stringify(CompanyPicker))
+      state.showCompany = false
+      getGroup(value.id)
+    }
+    const onGroupConfirm = value => {
+      console.log(value)
+      groupPicker.name = value.name
+      groupPicker.id = value.id
+      if (value.number) {
+        groupPicker.number = value.number
+      }
+      state.showGroup = false
+      getUser(value.id)
+    }
+    const onMemberConfirm = value => {
+      memberPicker.userName = value.userName
+      memberPicker.id = value.id
+      state.showMember = false
+    }
     onBeforeMount(() => {
       queryAProcess()
+      getCompany()
     })
     onMounted(() => {})
     return {
+      CompanyPicker,
+      groupPicker,
+      memberPicker,
+      onMemberConfirm,
+      onGroupConfirm,
+      onCompanyConfirm,
+      customComFieldName,
+      customGroFieldName,
+      customMemFieldName,
       currentDate,
       kindPicker,
       onSubmit,
@@ -298,7 +410,10 @@ export default {
       dateclick,
       chooseinputType,
       onDataTimeConfirm,
-      dateandtime
+      dateandtime,
+      companyColumns,
+      groupColumns,
+      memberColumns
     }
   }
 }

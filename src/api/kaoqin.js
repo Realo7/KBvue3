@@ -94,3 +94,27 @@ export function recordTable(data) {
     params: data,
   });
 }
+// 查询所有公司
+export function findCompany(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findCompany',
+    method: 'post',
+    params: data,
+  });
+}
+//根据公司ID选取部门
+export function findDepartmentBy(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findDepartmentByCompanyId',
+    method: 'post',
+    params: data,
+  });
+}
+//根据部门ID选取人员
+export function findUserBy(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findUserByDepartmentId',
+    method: 'post',
+    params: data,
+  });
+}
