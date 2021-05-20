@@ -25,13 +25,12 @@ export function queryTemplateTable(data) {
     params: data,
   });
 }
-
 // 发起审批-发起审批
 export function goTemplate(data) {
   return axios({
     url: '/api/oa/initiateApplication/add',
     method: 'post',
-    params: data,
+    data,
   });
 }
 // 发起审批-我的审批
@@ -57,7 +56,40 @@ export function myApprovalRecord(data) {
 //我的申请api/oa/myApplicationInquiry/list
 export function querryMyApply(data) {
   return axios({
-    url: 'api/oa/myApplicationInquiry/list',
+    url: '/api/oa/myApplicationInquiry/list',
+    method: 'post',
+    params: data,
+  });
+}
+//通过申请
+
+export function passApproval(data) {
+  return axios({
+    url: '/api/oa/waitingForMyApproval/Approved',
+    method: 'post',
+    params: data,
+  });
+}
+// 查询申请详细
+export function queryDetails(data) {
+  return axios({
+    url: '/api/oa/myApplicationInquiry/queryDetails',
+    method: 'post',
+    params: data,
+  });
+}
+// 查询进度记录
+export function recordNote(data) {
+  return axios({
+    url: '/api/oa/myApplicationInquiry/findApprovalRecordNote',
+    method: 'post',
+    params: data,
+  });
+}
+// 查询申请单据
+export function recordTable(data) {
+  return axios({
+    url: '/api/oa/myApplicationInquiry/findApprovalRecordTable',
     method: 'post',
     params: data,
   });

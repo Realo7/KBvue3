@@ -13,6 +13,7 @@ const service = axios.create({
 
 // request拦截器 request interceptor
 service.interceptors.request.use(config => {
+  //config.header=[]可以在这添加请求头里面的Content-Type
   return config
 },error => {
   console.log(error);

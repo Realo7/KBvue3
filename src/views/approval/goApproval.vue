@@ -1,24 +1,47 @@
 <template>
   <div style="margin:100px 15px 0px 15px">
+    <van-field v-model="kindPicker.name "
+               readonly
+               clickable
+               name="picker"
+               label="申请类型"
+               placeholder="点击选择申请类型"
+               @click="state.showPicker1 = true" />
+    <van-empty v-if="key_value==''"
+               description="暂时没有该申请单的字段">
+
+    </van-empty>
     <van-form @submit="onSubmit">
-      <van-field v-model="kindPicker.name "
-                 readonly
-                 clickable
-                 name="picker"
-                 label="申请类型"
-                 placeholder="点击选择申请类型"
-                 @click="state.showPicker1 = true" />
-      <van-empty v-if="key_value==''"
-                 description="暂时没有该申请单的字段">
-
-      </van-empty>
-
+      <div v-show="key_value!=''">
+        <van-field v-model="state.value"
+                   readonly
+                   clickable
+                   name="company"
+                   label="选择公司"
+                   placeholder="点击选择公司"
+                   @click="state.showCompany = true" />
+        <van-field v-model="state.value"
+                   readonly
+                   clickable
+                   name="Group"
+                   label="选择部门"
+                   placeholder="点击选择部门"
+                   @click="state.showGroup = true" />
+        <van-field v-model="state.value"
+                   readonly
+                   clickable
+                   name="Member"
+                   label="选择人员"
+                   placeholder="点击选择人员"
+                   @click="state.showMember = true" />
+      </div>
+      <!-- item.type==='时间'?dateclick(item,index):state.showPicker2=false -->
       <van-field v-for="(item,index) in key_value"
                  :key="item.id"
                  v-model="item.value"
                  clickable
-                 :readonly="item.type==='时间'"
-                 @click="item.type==='时间'?dateclick(item,index):state.showPicker2=false"
+                 :readonly="item.type=='时间'||item.type=='日期+时间'||item.type=='日期'"
+                 @click="chooseinputType(item,index)"
                  :name="item.key"
                  :label="item.key"
                  :placeholder="`请填写${item.key}`"
@@ -33,7 +56,27 @@
         </van-button>
       </div>
     </van-form>
-
+    <!-- 选择人员 -->
+    <van-popup v-model:show="state.showMember"
+               position="bottom">
+      <van-picker :columns="memberColumns"
+                  @confirm="onConfirm"
+                  @cancel="state.showMember = false" />
+    </van-popup>
+    <!-- 选择部门 -->
+    <van-popup v-model:show="state.showGroup"
+               position="bottom">
+      <van-picker :columns="groupColumns"
+                  @confirm="onConfirm"
+                  @cancel="state.showGroup = false" />
+    </van-popup>
+    <!-- 选择公司 -->
+    <van-popup v-model:show="state.showCompany"
+               position="bottom">
+      <van-picker :columns="companyColumns"
+                  @confirm="onConfirm"
+                  @cancel="state.showCompany = false" />
+    </van-popup>
     <van-popup v-model:show="state.showPicker1"
                position="bottom">
       <van-picker :columns="columns"
@@ -42,6 +85,7 @@
                   @cancel="state.showPicker1 = false" />
     </van-popup>
 
+    <!-- //选择年月日的弹窗 -->
     <van-popup v-model:show="state.showPicker2"
                position="bottom">
       <van-datetime-picker v-model="currentDate"
@@ -51,6 +95,16 @@
                            @confirm="onDataConfirm"
                            @cancel="state.showPicker2 = false" />
     </van-popup>
+    <!-- 选择年月日时间的弹窗 -->
+    <van-popup v-model:show="state.showPicker3"
+               position="bottom">
+      <van-datetime-picker v-model="dateandtime"
+                           type="datetime"
+                           title="选择年月日时间"
+                           :min-date="minDate"
+                           @confirm="onDataTimeConfirm"
+                           @cancel="state.showPicker3 = false" />
+    </van-popup>
   </div>
 </template>
 
@@ -58,33 +112,70 @@
 import { ref, onBeforeMount, onMounted, reactive, nextTick, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { queryApprovalProcess, queryTemplateDetails, goTemplate, queryTemplateTable } from '@/api/kaoqin.js'
-
+import moment from 'moment'
 // @ is an alias to /src
 
 export default {
   name: 'goApproval',
   setup() {
+    const store = useStore()
+    // let isread = ref(false)
     let minDate = ref(new Date())
     // let maxDate = ref('')
     let currentDate = ref()
+    let dateandtime = ref()
     watch(currentDate, (a, b) => {
       console.log('侦听探针' + a + '旧的' + b)
     })
     let selectedindex = ref()
     let key_value = ref([])
     let columns = ref([])
+    let companyColumns = ref([])
+    let groupColumns = ref([])
+    let memberColumns = ref([])
     const picker = ref(null)
     const customFieldName = {
       text: 'name'
     }
     const kindPicker = reactive({
       name: '',
-      pickerid: 0
+      pickerid: 0,
+      id: 0,
+      activitiKey: ''
     })
     const state = reactive({
+      showCompany: false,
+      showGroup: false,
+      showMember: false,
       showPicker1: false,
-      showPicker2: false
+      showPicker2: false,
+      showPicker3: false
     })
+    const chooseinputType = (item, index) => {
+      switch (item.type) {
+        case '字符串':
+          console.log('1')
+          break
+        case '长文本':
+          console.log('2')
+          break
+        case '整数':
+          console.log('3')
+          break
+        case '日期':
+          console.log('4')
+          dateclick(item, index)
+          break
+        case '时间':
+          console.log('5')
+          break
+        case '日期+时间':
+          console.log('6')
+          datetimeclick(item, index)
+          break
+      }
+    }
+    //查询公司
 
     //点击时间表单框体触发
     const dateclick = (item, index) => {
@@ -92,10 +183,22 @@ export default {
       selectedindex.value = index
       state.showPicker2 = true
     }
+    //时间+日期触发
+    const datetimeclick = (item, index) => {
+      console.log(key_value.value[index])
+      selectedindex.value = index
+      state.showPicker3 = true
+    }
+    //日期触发
+
+    // 整数触发
     //选择申请类型弹窗确认
     const onConfirm = value => {
+      console.log(value)
       kindPicker.name = value.name
+      kindPicker.activitiKey = value.activitiKey
       kindPicker.pickerid = value.formTemplateId
+      kindPicker.id = value.id
       state.showPicker1 = false
       if (kindPicker.pickerid !== 0) {
         getTemplateDetails()
@@ -103,14 +206,35 @@ export default {
     }
     // 点击时间弹窗确认触发
     const onDataConfirm = value => {
-      console.log('sadasdadasdasdasdasd' + selectedindex.value)
-      key_value.value[selectedindex.value].value = value
+      let re = moment(value).format('YYYY-MM-DD')
+
+      key_value.value[selectedindex.value].value = re
       state.showPicker2 = false
+    }
+    const onDataTimeConfirm = value => {
+      let re = moment(value).format('YYYY-MM-DD HH:mm:ss')
+
+      key_value.value[selectedindex.value].value = re
+      state.showPicker3 = false
     }
     // 提交触发,f发起审批
     const onSubmit = values => {
-      console.log('submit', values)
-      goTemplate()
+      console.log(JSON.stringify(key_value.value))
+      let formData = new FormData()
+      formData.append('userId', store.state.qhid)
+      formData.append('userName', store.state.qhusername)
+      formData.append('name', kindPicker.name)
+      formData.append('key', kindPicker.activitiKey)
+      formData.append('formTemplateId', kindPicker.pickerid)
+      formData.append('detailed', JSON.stringify(key_value.value))
+      formData.append('table', JSON.stringify([{}]))
+      formData.append('applyCompanyName', '宁德思客琦智能装备有限公司')
+      formData.append('applyDepartmentName', '软件研发部')
+      formData.append('applyUserName', '申请人')
+
+      console.log(fashe)
+      console.log(formData)
+      goTemplate(formData)
         .then(res => {
           console.log(res)
         })
@@ -120,15 +244,25 @@ export default {
     }
     // 获取申请的类型
     const queryAProcess = () => {
-      console.log('获取查询审批流程')
-      // let devd = ['1', '2', '3']
-      // columns.value = devd
       queryApprovalProcess()
         .then(res => {
-          console.log(res)
           columns.value = res.result
         })
         .catch(err => console.log(err))
+    }
+    //获取是否存在报销单据
+    const gettemplateTable = () => {
+      let fashe = {
+        id: kindPicker.id
+      }
+      queryTemplateTable(fashe)
+        .then(res => {
+          console.log('查询到的报销单据' + JSON.stringify(res))
+        })
+        .catch(err => {
+          console.log(err)
+          Notify({ type: 'warning', message: '查询单据表单错误' })
+        })
     }
     // 获取申请类型的模板
     const getTemplateDetails = () => {
@@ -138,12 +272,10 @@ export default {
       queryTemplateDetails(param)
         .then(res => {
           key_value.value = res.result
-          key_value.value.map((item, index) => {
-            item.value = ''
-          })
-          console.log(res)
+          gettemplateTable()
         })
         .catch(err => {
+          Notify({ type: 'warning', message: '获取申请类型模板错误' })
           console.log(err)
         })
     }
@@ -163,7 +295,10 @@ export default {
       getTemplateDetails,
       onDataConfirm,
       minDate,
-      dateclick
+      dateclick,
+      chooseinputType,
+      onDataTimeConfirm,
+      dateandtime
     }
   }
 }

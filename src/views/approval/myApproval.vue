@@ -27,8 +27,15 @@
           <van-button round
                       block
                       type="primary"
-                      @click="passApproval">
+                      @click="gopassApproval('通过')">
             通过申请
+          </van-button>
+          <van-divider />
+          <van-button round
+                      block
+                      type="primary"
+                      @click="gopassApproval('驳回')">
+            拒绝申请
           </van-button>
         </div>
 
@@ -42,7 +49,8 @@
 <script>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
-import { myApproval } from '@/api/kaoqin.js'
+
+import { myApproval, passApproval } from '@/api/kaoqin.js'
 export default {
   setup() {
     const store = useStore()
@@ -76,11 +84,21 @@ export default {
         })
     }
     //通过申请
-    const passApproval = () => {}
+    const gopassApproval = string => {
+      // 提示确认
+
+      passApproval()
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
     onMounted(() => {
       getMyApproval()
     })
-    return { active, result, passApproval }
+    return { active, result, gopassApproval }
   }
 }
 </script>

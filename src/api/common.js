@@ -26,3 +26,27 @@ export function getYiYan() {
     method: 'get',
   });
 }
+//查询所有公司/api/oa/initiateApplication/findCompany
+export function findCompany(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findCompany',
+    method: 'post',
+    params: data,
+  });
+}
+//根据公司id查询部门/api/oa/initiateApplication/findDepartmentByCompanyId
+export function findDepartment(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findDepartmentByCompanyId',
+    method: 'post',
+    params: data,
+  });
+}
+// 根据部门ID查询人员/api/oa/initiateApplication/findUserByDepartmentId
+export function findUser(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findUserByDepartmentId',
+    method: 'post',
+    params: data,
+  });
+}
