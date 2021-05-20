@@ -10,12 +10,16 @@ export default createStore({
     avatar: '',
     mobile: '',
     qhid:'',
-    qhusername:''//琦航对应的用户名
+    qhusername:'',//琦航对应的用户名
+    test:'1'
   },
   mutations: {
     getUserNmae(state, data) {
       state.userNmae = data;
     },
+    getTest(state,test){
+      state.test=test
+    }
   },
   actions: {
     async forceGetUserInfo(state, data) {

@@ -42,3 +42,23 @@ export function myApproval(data) {
     params: data,
   });
 }
+//审批记录
+// userId: 82
+// pageNum: 1
+// pageSize: 10
+// s: 1621424583095
+export function myApprovalRecord(data) {
+  return axios({
+    url: '/api/oa/MyApprovalRecord/list',
+    method: 'post',
+    params: data,
+  });
+}
+//我的申请api/oa/myApplicationInquiry/list
+export function querryMyApply(data) {
+  return axios({
+    url: 'api/oa/myApplicationInquiry/list',
+    method: 'post',
+    params: data,
+  });
+}

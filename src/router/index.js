@@ -27,6 +27,16 @@ const routes = [
         component: () => import('@/views/approval/myApproval.vue'),
       },
       {
+        path: '/querryMyApply',
+        name: 'querryMyApply',
+        component: () => import('@/views/approval/querryMyApply.vue'),
+      },
+      {
+        path: '/myApprovalRecord',
+        name: 'myApprovalRecord',
+        component: () => import('@/views/approval/myApprovalRecord.vue'),
+      },
+      {
         path: '/mine',
         name: 'Mine',
         component: () => import('@/views/mine.vue'),

@@ -18,10 +18,10 @@
                      to="/myApproval" />
       <van-grid-item icon="completed"
                      text="我的审批记录"
-                     url="https://www.baidu.com" />
+                     to="/myApprovalRecord" />
       <van-grid-item icon="todo-list-o"
                      text="我的申请查询"
-                     url="https://www.baidu.com" />
+                     to="/querryMyApply" />
 
     </van-grid>
   </div>
