@@ -64,6 +64,7 @@ export function querryMyApply(data) {
 //通过申请
 
 export function passApproval(data) {
+ 
   return axios({
     url: '/api/oa/waitingForMyApproval/Approved',
     method: 'post',
@@ -114,6 +115,30 @@ export function findDepartmentBy(data) {
 export function findUserBy(data) {
   return axios({
     url: '/api/oa/initiateApplication/findUserByDepartmentId',
+    method: 'post',
+    params: data,
+  });
+}
+//记录的详细
+export function detailRecord(data) {
+  return axios({
+    url: '/api/oa/SinglePage/queryDetails',
+    method: 'post',
+    params: data,
+  });
+}
+//记录的table 
+export function detailRecordTable(data) {
+  return axios({
+    url: '/api/oa/SinglePage/findApprovalRecordTable',
+    method: 'post',
+    params: data,
+  });
+}
+//暂时不知道干嘛的
+export function detailquerry(data) {
+  return axios({
+    url: '/api/oa/SinglePage/query',
     method: 'post',
     params: data,
   });

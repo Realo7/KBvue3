@@ -8,7 +8,7 @@ import { useStore } from 'vuex'
 import { getAuthCode } from '@/util/dingtalk'
 import { useRouter } from 'vue-router'
 import { bindUserwithDD } from '@/api/user.js'
-import { Dialog } from 'vant'
+import { Dialog, Notify } from 'vant'
 import config from '@/config/index.js'
 // @ is an alias to /src
 
@@ -62,18 +62,17 @@ export default {
       const userId = process.env.VUE_APP_USERID
       const accessToken = process.env.VUE_APP_ACCESSTOKEN
       const data = { userId, accessToken }
-      console.log(data)
+
       store
         .dispatch('forceGetUserInfo', data)
         .then(res => {
-          console.log(`强制获取${JSON.stringify(res)}`)
+          // console.log(`强制获取${JSON.stringify(res)}`)
           store.state.username = config.name
           store.state.userid = config.userId
           store.state.mobile = config.mobile
           store.state.avatar = config.avatar
-
           localStorage.setItem('accessToken', res.result.accessToken)
-          console.log(store.state)
+
           // querrybind(res.result.mobile, res.result.userid)
           //上线修改
           querrybind(18068711360, config.userId)
@@ -88,7 +87,9 @@ export default {
       let data = { mobile, appId: userId }
       bindUserwithDD(data)
         .then(res => {
-          console.log(res)
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           //如果已经绑定过，把琦航账户的id和username存到vuex和localstorage
           store.state.qhusername = res.result.userName
           localStorage.setItem('userName', res.result.userName)

@@ -42,9 +42,9 @@ const routes = [
         component: () => import('@/views/mine.vue'),
       },
       {
-        path: '/detail/:id',
-        name: 'Detail',
-        component: () => import('@/views/Detail.vue'),
+        path: '/approvalDetail',
+        name: 'approvalDetail',
+        component: () => import('@/views/approval/approvalDetail.vue'),
       },
       {
         path: '/h5login',

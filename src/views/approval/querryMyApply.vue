@@ -6,6 +6,7 @@
                 :title="item.type"
                 :value="item.state"
                 :label="item.dt"
+                :to="{ path:'/approvalDetail',query:{listNo:item.listNo} }"
                 is-link />
     </van-cell-group>
   </div>
@@ -13,12 +14,18 @@
 <script>
 import { querryMyApply } from '@/api/kaoqin.js'
 import { onMounted, reactive } from 'vue'
+import { useStore } from 'vuex'
 export default {
   setup() {
+    const store = useStore()
     let applyList = reactive({ list: [] })
     const getMyApply = () => {
-      //暂时使用李经理的申请数据
-      let fashe = { userId: 82, userName: '李经理', pageNum: 1, pageSize: 10 }
+      let fashe = {
+        userId: store.state.qhid,
+        userName: store.state.qhusername,
+        pageNum: 1,
+        pageSize: 50
+      }
       querryMyApply(fashe)
         .then(res => {
           console.log(res)

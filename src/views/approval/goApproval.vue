@@ -1,5 +1,6 @@
 <template>
   <div style="margin:100px 15px 0px 15px">
+
     <van-field v-model="kindPicker.name "
                readonly
                clickable
@@ -47,7 +48,8 @@
                  :placeholder="`请填写${item.key}`"
                  :rules="[{ required: true, message: `请填写${item.key}` }]" />
 
-      <div style="margin: 16px;">
+      <div v-if="key_value!=''"
+           style="margin: 16px;">
         <van-button round
                     block
                     type="primary"
@@ -108,6 +110,14 @@
                            @confirm="onDataTimeConfirm"
                            @cancel="state.showPicker3 = false" />
     </van-popup>
+    <van-dialog v-model:show="state.showdialog"
+                title="提示"
+                show-cancel-button
+                style="text-align:center"
+                @confirm='gohomepage'>
+      <van-loading v-show="state.isloading" />
+      <div v-show="!state.isloading">提交成功,跳转首页</div>
+    </van-dialog>
   </div>
 </template>
 
@@ -126,7 +136,7 @@ import {
   queryTemplateTable
 } from '@/api/kaoqin.js'
 import moment from 'moment'
-import { getUser } from '../../api/home'
+import { getUser } from '@/api/home'
 // @ is an alias to /src
 
 export default {
@@ -176,7 +186,9 @@ export default {
       showMember: false,
       showPicker1: false,
       showPicker2: false,
-      showPicker3: false
+      showPicker3: false,
+      isloading: false,
+      showdialog: false
     })
     const chooseinputType = (item, index) => {
       switch (item.type) {
@@ -206,6 +218,9 @@ export default {
     const getCompany = () => {
       findCompany()
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           console.log(res)
           companyColumns.value = res.result
         })
@@ -218,6 +233,9 @@ export default {
     const getGroup = id => {
       findDepartmentBy({ companyId: id })
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           console.log(res)
           groupColumns.value = res.result
         })
@@ -229,6 +247,9 @@ export default {
     const getUser = id => {
       findUserBy({ departmentId: id })
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           memberColumns.value = res.result
           console.log(res)
         })
@@ -236,6 +257,13 @@ export default {
           console.log(err)
           Notify({ type: 'warning', message: '获取人员列表失败' })
         })
+    }
+    //点击确认跳转主页
+    const gohomepage = () => {
+      state.showdialog = false
+      router.replace({
+        path: '/'
+      })
     }
     //点击时间表单框体触发
     const dateclick = (item, index) => {
@@ -293,23 +321,19 @@ export default {
       formData.append('applyCompanyName', CompanyPicker.companyName)
       formData.append('applyDepartmentName', groupPicker.name)
       formData.append('applyUserName', memberPicker.userName)
-
       console.log(formData)
+      state.showdialog = true
       goTemplate(formData)
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
+          state.isloading = false
+          Notify({ type: 'primary', message: res.msg })
           console.log('@@@@@@@@@@@@@@@@' + res)
-          //提交成功处理
-          Dialog.alert({
-            title: '提示',
-            message: '提交成功,跳转主页',
-            closeOnPopstate: false
-          }).then(() => {
-            router.replace({
-              url: '/'
-            })
-          })
         })
         .catch(err => {
+          state.isloading = false
           Notify({ type: 'warning', message: '提交错误,请检查网络' })
           console.log(err)
         })
@@ -318,6 +342,9 @@ export default {
     const queryAProcess = () => {
       queryApprovalProcess()
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           columns.value = res.result
         })
         .catch(err => {
@@ -332,6 +359,9 @@ export default {
       }
       queryTemplateTable(fashe)
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           console.log('查询到的报销单据' + JSON.stringify(res))
         })
         .catch(err => {
@@ -346,6 +376,9 @@ export default {
       }
       queryTemplateDetails(param)
         .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          }
           key_value.value = res.result
           gettemplateTable()
         })
@@ -387,6 +420,7 @@ export default {
     })
     onMounted(() => {})
     return {
+      gohomepage,
       CompanyPicker,
       groupPicker,
       memberPicker,

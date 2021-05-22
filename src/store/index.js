@@ -9,7 +9,7 @@ export default createStore({
     username: '',//钉钉返回的用户名
     avatar: '',
     mobile: '',
-    qhid:'',
+    qhid:0,
     qhusername:'',//琦航对应的用户名
     test:'1'
   },

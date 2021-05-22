@@ -14,13 +14,13 @@
                      text="发起审批"
                      to="/goApproval" />
       <van-grid-item icon="sign"
-                     text="我的审批"
+                     text="待我审批"
                      to="/myApproval" />
       <van-grid-item icon="completed"
                      text="我的审批记录"
                      to="/myApprovalRecord" />
       <van-grid-item icon="todo-list-o"
-                     text="我的申请查询"
+                     text="我的申请"
                      to="/querryMyApply" />
 
     </van-grid>

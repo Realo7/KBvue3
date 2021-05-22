@@ -6,3 +6,11 @@ export function getUser() {
     method: 'get'
   })
 }
+
+export function qhUserLogin(data) {
+  return request({
+    url: '/api/getLoginSomeValueL',
+    method: 'post',
+    data:data
+  })
+}
