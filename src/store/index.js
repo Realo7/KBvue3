@@ -8,9 +8,10 @@ export default createStore({
     userid: '',
     username: '',//钉钉返回的用户名
     avatar: '',
-    mobile: '',
-    qhid:1,//上线重置
-    qhusername:'admin',//琦航对应的用户名
+    mobile: '15526441465',
+    qhid:0,//上线重置
+    qhusername:'',//琦航对应的用户名
+    qhroleId:0,
     test:'1'
   },
   mutations: {

@@ -59,8 +59,8 @@ export default {
       updateUserwithDD(fashe)
         .then(res => {
           console.log(res)
-          if (res.code !== '200') {
-            Toast.fail(res.msg + '请重新输入')
+          if (res.code != '200') {
+            Toast.fail(res.res + '请重新输入')
             state.username = ''
             state.password = ''
           } else {

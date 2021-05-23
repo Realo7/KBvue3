@@ -22,7 +22,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     const HomegetAuthCode = () => {
       console.log(process.env.NODE_ENV)
-      // 获取钉钉临时授权码
+      // 1.获取钉钉临时授权码
       getAuthCode(process.env.VUE_APP_CORPID)
         .then(rew => {
           Notify('获取钉钉成功进入钉钉环境' + rew.code)
@@ -30,6 +30,7 @@ export default {
           // 存入store
           store.state.authCode = rew.code
           code.authCode = rew.code
+          // 2.获取钉钉accessToken和用户信息
           store
             .dispatch('dduserlogin', code)
             .then(res => {
@@ -41,20 +42,30 @@ export default {
               store.state.avatar = res.result.avatar
               localStorage.setItem('accessToken', res.result.accessToken)
               console.log(`app.vue里面获取${store}`)
+
+              // 3.然后查询是否绑定qh账号
+              querrybind(res.result.mobile, res.result.userid)
             })
             .catch(err => {
+              // 说明没有获取到用户信息和accessToken
+              Notify({
+                message: 'getACCESSTOKEN出现问题' + err,
+                duration: 2000
+              })
               console.log(err)
+              router.push({
+                path: '/h5login'
+              })
             })
         })
         .catch(err => {
+          // 说明没有进入钉钉环境
           console.log('进入H5虚拟环境')
-          // 如果不是在钉钉环境的化进入H5虚拟环境
           // 进入H5的登录界面
           // 测试环境注释掉
-          // router.push({
-          //   path: '/h5login'
-          // })
-          h5GetUser()
+          router.push({
+            path: '/h5login'
+          })
         })
     }
     // H5环境获取用户信息(之前需要跑一次钉钉环境获取信息)
@@ -63,7 +74,6 @@ export default {
       const userId = process.env.VUE_APP_USERID
       const accessToken = process.env.VUE_APP_ACCESSTOKEN
       const data = { userId, accessToken }
-
       store
         .dispatch('forceGetUserInfo', data)
         .then(res => {
@@ -74,9 +84,9 @@ export default {
           store.state.avatar = config.avatar
           localStorage.setItem('accessToken', res.result.accessToken)
 
-          // querrybind(res.result.mobile, res.result.userid)
+          querrybind(res.result.mobile, res.result.userid)
           //上线修改
-          querrybind(18068711360, config.userId)
+          // querrybind(18068711360, config.userId)
         })
         .catch(err => {
           console.log(err)
@@ -88,15 +98,8 @@ export default {
       let data = { mobile, appId: userId }
       bindUserwithDD(data)
         .then(res => {
-          if (res.code != 200) {
-            Notify({ type: 'waring', message: res.msg })
-          }
-          //如果已经绑定过，把琦航账户的id和username存到vuex和localstorage
-          store.state.qhusername = res.result.userName
-          localStorage.setItem('userName', res.result.userName)
-          store.state.qhid = res.result.id
-          localStorage.setItem('qhid', res.result.id)
           if (res.code !== 200) {
+            // 如果没有
             Dialog.confirm({
               title: '提示',
               message: res.msg,
@@ -113,8 +116,17 @@ export default {
                 location.reload()
               })
           }
+          //如果已经绑定过，把返回的琦航账户的id和username存到vuex和localstorage
+          store.state.qhusername = res.result.userName
+          localStorage.setItem('userName', res.result.userName)
+          store.state.qhid = res.result.id
+          localStorage.setItem('qhid', res.result.id)
+          router.replace({
+            path: '/'
+          })
         })
         .catch(err => {
+          Notify(err)
           console.log(err)
         })
     }
