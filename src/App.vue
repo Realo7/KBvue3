@@ -25,6 +25,7 @@ export default {
       // 获取钉钉临时授权码
       getAuthCode(process.env.VUE_APP_CORPID)
         .then(rew => {
+          Notify('获取钉钉成功进入钉钉环境' + rew.code)
           console.log(rew)
           // 存入store
           store.state.authCode = rew.code

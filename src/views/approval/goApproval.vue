@@ -41,6 +41,7 @@
                  :key="item.id"
                  v-model="item.value"
                  clickable
+                 :type="item.type=='整数'?'digit':'text'"
                  :readonly="item.type=='时间'||item.type=='日期+时间'||item.type=='日期'"
                  @click="chooseinputType(item,index)"
                  :name="item.key"
@@ -48,6 +49,48 @@
                  :placeholder="`请填写${item.key}`"
                  :rules="[{ required: true, message: `请填写${item.key}` }]" />
 
+      <!-- 报销单据 -->
+      <van-collapse v-show="key_value!=''"
+                    v-model="state.showReimbursement"
+                    accordion>
+        <van-collapse-item title="相关报表"
+                           name="1">
+          <div v-if="temTable!=''">
+            <!-- :readonly="item.type=='时间'||item.type=='日期+时间'||item.type=='日期'" -->
+            <van-field v-for="item in temTable"
+                       :key="item.id"
+                       v-model="item.value"
+                       :label="item.key"
+                       :placeholder="`请填写${item.key}`" />
+          </div>
+          <div v-if="temTable==''">当前申请没有对应报销表单</div>
+        </van-collapse-item>
+      </van-collapse>
+      <!-- 上传图片 -->
+      <van-field name="uploader"
+                 label="上传图片"
+                 v-show="key_value!=''">
+        <template #input>
+          <van-uploader max-size="5242880"
+                        v-model="fileList"
+                        :after-read="afterRead" />
+        </template>
+      </van-field>
+      <!-- 上传文件 -->
+      <van-field name="uploadfiles"
+                 label="上传文件"
+                 v-show="key_value!=''">
+        <template #input>
+          <van-uploader max-size="10485760"
+                        accept="image/*,.pdf,.doc.,rar,.zip,.docx"
+                        v-model="otherFileList">
+            <van-button icon="plus"
+                        type="primary">上传文件</van-button>
+          </van-uploader>
+        </template>
+
+      </van-field>
+      <!-- 提交按钮 -->
       <div v-if="key_value!=''"
            style="margin: 16px;">
         <van-button round
@@ -58,6 +101,7 @@
         </van-button>
       </div>
     </van-form>
+
     <!-- 选择人员 -->
     <van-popup v-model:show="state.showMember"
                position="bottom">
@@ -158,6 +202,7 @@ export default {
     let companyColumns = ref([])
     let groupColumns = ref([])
     let memberColumns = ref([])
+    let temTable = ref([])
     const picker = ref(null)
     const customFieldName = {
       text: 'name'
@@ -181,6 +226,7 @@ export default {
     const groupPicker = reactive({})
     const memberPicker = reactive({})
     const state = reactive({
+      showReimbursement: '0',
       showCompany: false,
       showGroup: false,
       showMember: false,
@@ -190,6 +236,16 @@ export default {
       isloading: false,
       showdialog: false
     })
+    const fileList = ref([])
+    const otherFileList = ref([])
+    const afterRead = file => {
+      file.status = 'uploading'
+      file.message = '上传中...'
+      setTimeout(() => {
+        file.status = 'success'
+        file.message = '上传成功'
+      }, 500)
+    }
     const chooseinputType = (item, index) => {
       switch (item.type) {
         case '字符串':
@@ -310,6 +366,12 @@ export default {
     const onSubmit = values => {
       console.log(JSON.stringify(key_value.value))
       let formData = new FormData()
+      for (let i = 0; i < fileList.value.length; i++) {
+        formData.append('imgFile', fileList.value[i].file)
+      }
+      for (let i = 0; i < otherFileList.value.length; i++) {
+        formData.append('file', otherFileList.value[i].file)
+      }
       formData.append('userId', store.state.qhid)
       formData.append('userName', store.state.qhusername)
       formData.append('name', kindPicker.name)
@@ -363,6 +425,7 @@ export default {
             Notify({ type: 'waring', message: res.msg })
           }
           console.log('查询到的报销单据' + JSON.stringify(res))
+          temTable.value = res.result
         })
         .catch(err => {
           console.log(err)
@@ -420,6 +483,10 @@ export default {
     })
     onMounted(() => {})
     return {
+      otherFileList,
+      fileList,
+      afterRead,
+      temTable,
       gohomepage,
       CompanyPicker,
       groupPicker,

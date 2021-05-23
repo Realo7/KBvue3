@@ -31,7 +31,7 @@ service.interceptors.response.use(response => {
     return Promise.resolve(res)
   }
 },error =>{
-  Notify('网络返回出现问题');
+  // Notify('网络返回出现问题');
   return Promise.reject(error)
 })
 export default service
