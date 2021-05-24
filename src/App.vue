@@ -63,9 +63,13 @@ export default {
           console.log('进入H5虚拟环境')
           // 进入H5的登录界面
           // 测试环境注释掉
-          router.push({
-            path: '/h5login'
-          })
+          if (store.state.qhid == '' || store.state.qhusername == '') {
+            router.push({
+              path: '/h5login'
+            })
+          } else {
+            Notify('未检测到钉钉环境')
+          }
         })
     }
     // H5环境获取用户信息(之前需要跑一次钉钉环境获取信息)

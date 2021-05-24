@@ -1,5 +1,7 @@
 <template>
   <div class="content">
+    <van-empty description="当前没有审批"
+               v-show="applyList.list==''" />
     <van-cell-group>
       <van-cell v-for="item in applyList.list"
                 :key="item.id"

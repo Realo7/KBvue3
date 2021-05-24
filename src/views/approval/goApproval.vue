@@ -158,9 +158,11 @@
                 title="提示"
                 show-cancel-button
                 style="text-align:center"
+                confirm-button-text="前往首页"
+                cancel-button-text="返回"
                 @confirm='gohomepage'>
       <van-loading v-show="state.isloading" />
-      <div v-show="!state.isloading">提交成功,跳转首页</div>
+      <div v-show="!state.isloading">{{passmsg}}</div>
     </van-dialog>
   </div>
 </template>
@@ -225,6 +227,7 @@ export default {
     let CompanyPicker = reactive({})
     const groupPicker = reactive({})
     const memberPicker = reactive({})
+    let passmsg = ref('')
     const state = reactive({
       showReimbursement: '0',
       showCompany: false,
@@ -387,12 +390,18 @@ export default {
       state.showdialog = true
       goTemplate(formData)
         .then(res => {
+          console.log(res)
+          console.log(res.code)
           if (res.code != 200) {
-            Notify({ type: 'waring', message: res.msg })
+            Notify({ type: 'waring', message: '提交错误' })
+            passmsg.value = '提交错误'
+            return
+          } else {
+            passmsg.value = '提交成功'
+            state.isloading = false
+            Notify({ type: 'primary', message: res.msg })
+            console.log('@@@@@@@@@@@@@@@@' + res)
           }
-          state.isloading = false
-          Notify({ type: 'primary', message: res.msg })
-          console.log('@@@@@@@@@@@@@@@@' + res)
         })
         .catch(err => {
           state.isloading = false
@@ -483,6 +492,7 @@ export default {
     })
     onMounted(() => {})
     return {
+      passmsg,
       otherFileList,
       fileList,
       afterRead,

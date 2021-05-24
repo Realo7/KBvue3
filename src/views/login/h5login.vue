@@ -64,19 +64,20 @@ export default {
           if (res.code !== 200) {
             state.username = ''
             state.password = ''
-            Notify(res.msg)
+            Notify('登陆失败,请重新登录')
+          } else {
+            store.state.qhid = res.result.id
+            store.state.qhusername = res.result.userName
+            store.state.qhroleId = res.result.roleId
+            router.push({
+              path: '/'
+            })
           }
-          store.state.qhid = res.result.id
-          store.state.qhusername = res.result.userName
-          store.state.qhroleId = res.result.roleId
-          router.push({
-            path: '/'
-          })
         })
         .catch(err => {
           state.username = ''
           state.password = ''
-          Notify(err)
+          Notify('登录失败，请检测网络通信')
           console.log(err)
         })
     }
