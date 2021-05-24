@@ -279,9 +279,10 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            console.log(res)
+            companyColumns.value = res.result
           }
-          console.log(res)
-          companyColumns.value = res.result
         })
         .catch(err => {
           console.log(err)
@@ -294,9 +295,10 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            console.log(res)
+            groupColumns.value = res.result
           }
-          console.log(res)
-          groupColumns.value = res.result
         })
         .catch(err => {
           console.log(err)
@@ -308,9 +310,10 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            memberColumns.value = res.result
+            console.log(res)
           }
-          memberColumns.value = res.result
-          console.log(res)
         })
         .catch(err => {
           console.log(err)
@@ -415,8 +418,9 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            columns.value = res.result
           }
-          columns.value = res.result
         })
         .catch(err => {
           Notify({ type: 'warning', message: '获取申请类型错误' })
@@ -432,9 +436,10 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            console.log('查询到的报销单据' + JSON.stringify(res))
+            temTable.value = res.result
           }
-          console.log('查询到的报销单据' + JSON.stringify(res))
-          temTable.value = res.result
         })
         .catch(err => {
           console.log(err)
@@ -450,9 +455,10 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            key_value.value = res.result
+            gettemplateTable()
           }
-          key_value.value = res.result
-          gettemplateTable()
         })
 
         .catch(err => {

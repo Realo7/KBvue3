@@ -119,15 +119,16 @@ export default {
               .catch(() => {
                 location.reload()
               })
+          } else {
+            //如果已经绑定过，把返回的琦航账户的id和username存到vuex和localstorage
+            store.state.qhusername = res.result.userName
+            localStorage.setItem('userName', res.result.userName)
+            store.state.qhid = res.result.id
+            localStorage.setItem('qhid', res.result.id)
+            router.replace({
+              path: '/'
+            })
           }
-          //如果已经绑定过，把返回的琦航账户的id和username存到vuex和localstorage
-          store.state.qhusername = res.result.userName
-          localStorage.setItem('userName', res.result.userName)
-          store.state.qhid = res.result.id
-          localStorage.setItem('qhid', res.result.id)
-          router.replace({
-            path: '/'
-          })
         })
         .catch(err => {
           Notify(err)

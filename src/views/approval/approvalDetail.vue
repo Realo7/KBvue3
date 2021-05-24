@@ -63,6 +63,8 @@ export default {
           if (res.code != 200) {
             // 提示
             Notify({ type: 'waring', message: res.msg })
+          } else {
+            console.log('拿到这个结果好像没有用的样子')
           }
         })
         .catch(err => {
@@ -76,48 +78,48 @@ export default {
           if (res.code != 200) {
             // 提示
             Notify({ type: 'waring', message: res.msg })
-          }
-          console.log(res)
-          detail.value = res.result
+          } else {
+            console.log(res)
+            detail.value = res.result
+            for (let item of detail.value) {
+              switch (item.type) {
+                case '图片':
+                  let imgsrr = JSON.parse(item.value)
+                  console.log(imgsrr)
+                  for (let i = 0; i < imgsrr.length; i++) {
+                    imgsrr[i].relativePath =
+                      'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/imgs/' + imgsrr[i].relativePath
+                    imgList.value.push(imgsrr[i])
+                  }
+                  break
+                case '附件':
+                  let filesrr = JSON.parse(item.value)
+                  console.log(filesrr)
+                  for (let i = 0; i < filesrr.length; i++) {
+                    filesrr[i].relativePath =
+                      'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/downloadFile/' +
+                      filesrr[i].relativePath +
+                      '/' +
+                      filesrr[i].oldName
 
-          for (let item of detail.value) {
-            switch (item.type) {
-              case '图片':
-                let imgsrr = JSON.parse(item.value)
-                console.log(imgsrr)
-                for (let i = 0; i < imgsrr.length; i++) {
-                  imgsrr[i].relativePath =
-                    'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/imgs/' + imgsrr[i].relativePath
-                  imgList.value.push(imgsrr[i])
-                }
-                break
-              case '附件':
-                let filesrr = JSON.parse(item.value)
-                console.log(filesrr)
-                for (let i = 0; i < filesrr.length; i++) {
-                  filesrr[i].relativePath =
-                    'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/downloadFile/' +
-                    filesrr[i].relativePath +
-                    '/' +
-                    filesrr[i].oldName
+                    fileList.value.push(filesrr[i])
+                  }
 
-                  fileList.value.push(filesrr[i])
-                }
-
-                break
-              case 'applyCompanyName':
-                break
-            }
-            switch (item.key) {
-              case 'applyUserName':
-                item.key = '用户名'
-                break
-              case 'applyDepartmentName':
-                item.key = '部门'
-                break
-              case 'applyCompanyName':
-                item.key = '公司'
-                break
+                  break
+                case 'applyCompanyName':
+                  break
+              }
+              switch (item.key) {
+                case 'applyUserName':
+                  item.key = '用户名'
+                  break
+                case 'applyDepartmentName':
+                  item.key = '部门'
+                  break
+                case 'applyCompanyName':
+                  item.key = '公司'
+                  break
+              }
             }
           }
         })

@@ -154,6 +154,7 @@ export default {
         .then(res => {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
+            return
           }
           console.log(res)
           Dialog.alert({
@@ -189,7 +190,7 @@ export default {
                 console.log(imgsrr)
                 for (let i = 0; i < imgsrr.length; i++) {
                   imgsrr[i].relativePath =
-                    'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/imgs/' + imgsrr[i].relativePath
+                    process.env.VUE_APP_BASE_URL + '/api/oa/myApplicationInquiry/imgs/' + imgsrr[i].relativePath
                   imgList.value.push(imgsrr[i])
                 }
                 break
@@ -198,7 +199,8 @@ export default {
                 console.log(filesrr)
                 for (let i = 0; i < filesrr.length; i++) {
                   filesrr[i].relativePath =
-                    'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/downloadFile/' +
+                    process.env.VUE_APP_BASE_URL +
+                    '/api/oa/myApplicationInquiry/downloadFile/' +
                     filesrr[i].relativePath +
                     '/' +
                     filesrr[i].oldName
@@ -224,6 +226,7 @@ export default {
           }
         })
         .catch(err => {
+          Notify('获取详细错误')
           console.log(err)
         })
     }
