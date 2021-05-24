@@ -17,10 +17,9 @@
  ```
 
  ### 简介
- - 关注公众号: 回复 “加群”，即可加入前端交流群 或者搜索 ``` 攻程狮小周 ```
  - 项目博客地址 ```https://blog.csdn.net/Govern66/article/details/110178890```
  <p>
-  <img src="/src/assets/images/qrcode_for_gh_5ddc08b3a52c_344.jpg" width="256" style="display:inline;">
+
 </p>
 
  ### 目录
