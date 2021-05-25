@@ -28,9 +28,10 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { getUser } from '../api/home'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'Home',
@@ -38,12 +39,15 @@ export default {
     const msg = ref('vue3.0')
     const list = ref([])
     const store = useStore()
-
+    const router = useRouter()
     const name = computed(() => store.state.userNmae)
     const handleBtn = () => {
       // 留个模板好记
       store.commit('getUserNmae', '123')
     }
+    onMounted(() => {
+      store.state.showtabbar = true
+    })
     return {
       msg,
       list,

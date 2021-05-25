@@ -143,3 +143,19 @@ export function detailquerry(data) {
     params: data,
   });
 }
+//查询单据种类
+export function querryDanjuKind(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findActivitiFormTemplate',
+    method: 'post',
+    params: data,
+  });
+}
+//通过userid和key查询单据号
+export function querryDanjuNum(data) {
+  return axios({
+    url: '/api/oa/initiateApplication/findApprovalRecordByUserIdAndKey',
+    method: 'post',
+    params: data,
+  });
+}

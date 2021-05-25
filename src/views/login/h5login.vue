@@ -29,6 +29,7 @@
                     block
                     type="primary"
                     native-type="submit">
+          <van-loading v-if="state.showloading" />
           提交
         </van-button>
       </div>
@@ -36,7 +37,7 @@
   </div>
 </template>
 <script>
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 
 import { qhUserLogin } from '@/api/home.js'
 import { Notify } from 'vant'
@@ -48,9 +49,11 @@ export default {
     const router = useRouter()
     const state = reactive({
       username: '',
-      password: ''
+      password: '',
+      showloading: false
     })
     const onSubmit = values => {
+      state.showloading = true
       console.log('submit', values)
       let fashe = {
         userName: state.username,
@@ -77,11 +80,14 @@ export default {
         .catch(err => {
           state.username = ''
           state.password = ''
+          state.showloading = false
           Notify('登录失败，请检测网络通信')
           console.log(err)
         })
     }
-
+    onMounted(() => {
+      store.state.showtabbar = false
+    })
     const querryUser = () => {}
 
     return {

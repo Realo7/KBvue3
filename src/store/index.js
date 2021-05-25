@@ -12,7 +12,8 @@ export default createStore({
     qhid:0,//上线重置
     qhusername:'',//琦航对应的用户名
     qhroleId:0,
-    test:'1'
+    test:'1',
+    showtabbar:true
   },
   mutations: {
     getUserNmae(state, data) {

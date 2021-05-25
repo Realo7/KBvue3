@@ -1,18 +1,24 @@
 <template>
-  <div>我的界面
-    <button @click="gotobind">进入绑定界面</button>
+  <div class="demo-home">
+    <!-- <button @click="gotobind">进入绑定界面</button> -->
+    <div>
 
-    <van-cell-group>
-      <van-cell title="当前登录用户"
-                :value="username" />
-      <van-cell title="绑定的琦航账号"
-                :value="qhusername" />
-      <van-cell title="琦航ID"
-                :value="qhid" />
-      <van-cell title="钉钉ID"
-                :value="ddid" />
-    </van-cell-group>
+    </div>
+    <div>
+      <van-cell-group>
+        <van-cell v-show="username"
+                  title="当前登录用户"
+                  :value="username" />
+        <van-cell title="琦航账号"
+                  :value="qhusername" />
+        <van-cell title="琦航ID"
+                  :value="qhid" />
+        <van-cell v-show="ddid"
+                  title="钉钉ID"
+                  :value="ddid" />
 
+      </van-cell-group>
+    </div>
   </div>
 </template>
 <script>
@@ -44,3 +50,12 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.demo-home {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  padding: 46px 20px 20px;
+  background: #fff;
+}
+</style>

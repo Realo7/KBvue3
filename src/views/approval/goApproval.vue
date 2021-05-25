@@ -66,6 +66,26 @@
           <div v-if="temTable==''">当前申请没有对应报销表单</div>
         </van-collapse-item>
       </van-collapse>
+      <!-- 关联单据 -->
+      <van-collapse v-show="key_value!=''"
+                    v-model="state.showReimbursement"
+                    accordion>
+        <van-collapse-item title="关联单据"
+                           name="2">
+          <van-field v-model="kindPicker.danjuKind"
+                     readonly
+                     clickable
+                     label="单据类型"
+                     placeholder="选择单据类型"
+                     @click="state.danjuKind = true" />
+          <van-field v-model="kindPicker.danjuNum"
+                     readonly
+                     clickable
+                     label="单据类型"
+                     placeholder="选择单据类型"
+                     @click="state.danjuNum = true" />
+        </van-collapse-item>
+      </van-collapse>
       <!-- 上传图片 -->
       <van-field name="uploader"
                  label="上传图片"
@@ -126,6 +146,7 @@
                   @confirm="onCompanyConfirm"
                   @cancel="state.showCompany = false" />
     </van-popup>
+    <!-- 选择申请类型 -->
     <van-popup v-model:show="state.showPicker1"
                position="bottom">
       <van-picker :columns="columns"
@@ -154,6 +175,22 @@
                            @confirm="onDataTimeConfirm"
                            @cancel="state.showPicker3 = false" />
     </van-popup>
+    <!-- 选择单据类型的弹窗 -->
+    <van-popup v-model:show="state.danjuKind"
+               position="bottom">
+      <van-picker :columns="danjuKindColumns"
+                  :columns-field-names="customdanjuKindName"
+                  @confirm="ondanjuConfirm"
+                  @cancel="state.danjuKind = false" />
+    </van-popup>
+    <van-popup v-model:show="state.danjuNum"
+               position="bottom">
+      <van-picker :columns="danjuNumColumns"
+                  :columns-field-names="customdanjuNumName"
+                  @confirm="ondanjuNumConfirm"
+                  @cancel="state.danjuNum = false" />
+    </van-popup>
+    <!-- 选择单据号的弹窗 -->
     <van-dialog v-model:show="state.showdialog"
                 title="提示"
                 show-cancel-button
@@ -172,7 +209,10 @@ import { ref, onBeforeMount, onMounted, reactive, nextTick, computed, watch } fr
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { Notify, Dialog } from 'vant'
+import { contactChoose } from '@/util/dingtalk.js'
 import {
+  querryDanjuKind,
+  querryDanjuNum,
   findUserBy,
   findDepartmentBy,
   findCompany,
@@ -201,11 +241,20 @@ export default {
     let selectedindex = ref()
     let key_value = ref([])
     let columns = ref([])
+    let danjuKindColumns = ref([])
+    let danjuNumColumns = ref([])
     let companyColumns = ref([])
     let groupColumns = ref([])
     let memberColumns = ref([])
     let temTable = ref([])
+    let linkList = ref([])
     const picker = ref(null)
+    let CompanyPicker = reactive({})
+    const groupPicker = reactive({})
+    const memberPicker = reactive({})
+    let passmsg = ref('')
+    const customdanjuKindName = { text: 'name' }
+    const customdanjuNumName = { text: 'listNo' }
     const customFieldName = {
       text: 'name'
     }
@@ -222,12 +271,11 @@ export default {
       name: '',
       pickerid: 0,
       id: 0,
-      activitiKey: ''
+      activitiKey: '',
+      danjuKind: '',
+      danjuNum: '',
+      danjuKey: ''
     })
-    let CompanyPicker = reactive({})
-    const groupPicker = reactive({})
-    const memberPicker = reactive({})
-    let passmsg = ref('')
     const state = reactive({
       showReimbursement: '0',
       showCompany: false,
@@ -237,7 +285,9 @@ export default {
       showPicker2: false,
       showPicker3: false,
       isloading: false,
-      showdialog: false
+      showdialog: false,
+      danjuKind: false,
+      danjuNum: false
     })
     const fileList = ref([])
     const otherFileList = ref([])
@@ -272,6 +322,41 @@ export default {
           datetimeclick(item, index)
           break
       }
+    }
+    //查询关联单据
+    const getDanjuKind = () => {
+      querryDanjuKind()
+        .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          } else {
+            console.log(res)
+            danjuKindColumns.value = res.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          Notify({ type: 'warning', message: '获取单据种类列表失败' })
+        })
+    }
+    const getDanjuNum = () => {
+      let fashe = {
+        userId: store.state.qhid,
+        key: kindPicker.danjuKey
+      }
+      querryDanjuNum(fashe)
+        .then(res => {
+          if (res.code != 200) {
+            Notify({ type: 'waring', message: res.msg })
+          } else {
+            console.log(res)
+            danjuNumColumns.value = res.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          Notify({ type: 'warning', message: '获取单据号列表失败' })
+        })
     }
     //查询公司
     const getCompany = () => {
@@ -355,6 +440,26 @@ export default {
         getTemplateDetails()
       }
     }
+    //确认选择单据种类之后
+    const ondanjuConfirm = value => {
+      console.log(value)
+      kindPicker.danjuKind = value.name
+      kindPicker.danjuKey = value.activitiKey
+      console.log('----------------' + JSON.stringify(kindPicker))
+      state.danjuKind = false
+      if (kindPicker.danjuKey != '') {
+        getDanjuNum()
+      }
+    }
+    //
+    const relationListNo = ref('')
+    const ondanjuNumConfirm = value => {
+      console.log(value)
+      kindPicker.danjuNum = value.listNo
+      relationListNo = value.listNo
+      state.danjuNum = false
+    }
+
     // 点击时间弹窗确认触发
     const onDataConfirm = value => {
       let re = moment(value).format('YYYY-MM-DD')
@@ -389,6 +494,10 @@ export default {
       formData.append('applyCompanyName', CompanyPicker.companyName)
       formData.append('applyDepartmentName', groupPicker.name)
       formData.append('applyUserName', memberPicker.userName)
+      if (relationListNo.value) {
+        formData.append('relationListNo', relationListNo.value)
+      }
+
       console.log(formData)
       state.showdialog = true
       goTemplate(formData)
@@ -495,8 +604,17 @@ export default {
     onBeforeMount(() => {
       queryAProcess()
       getCompany()
+      getDanjuKind()
     })
-    onMounted(() => {})
+    onMounted(() => {
+      contactChoose()
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    })
     return {
       passmsg,
       otherFileList,
@@ -530,7 +648,13 @@ export default {
       dateandtime,
       companyColumns,
       groupColumns,
-      memberColumns
+      memberColumns,
+      danjuKindColumns,
+      danjuNumColumns,
+      customdanjuKindName,
+      customdanjuNumName,
+      ondanjuConfirm,
+      ondanjuNumConfirm
     }
   }
 }

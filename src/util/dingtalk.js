@@ -4,6 +4,7 @@ import {
 import * as dd from 'dingtalk-jsapi/entry/union'; // 按需应用，微应用部分
 import requestAuthCode from 'dingtalk-jsapi/api/runtime/permission/requestAuthCode'; // 登陆用临时授权码
 import choose from 'dingtalk-jsapi/api/biz/contact/choose'; // PC 通讯录选人
+//DING 2.0发ding
 
 /**
  * 鉴权
@@ -26,6 +27,7 @@ function ddconfig(url) {
         'device.notification.prompt',
         'biz.ding.post',
         'biz.util.openLink',
+        'biz.ding.create'
       ], // 必填，需要使用的jsapi列表，注意：不要带dd。
     });
   });

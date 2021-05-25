@@ -52,6 +52,6 @@ export default {
 </script>
 <style scoped>
 .content {
-  margin-top: 2rem;
+  margin-top: 1.4rem;
 }
 </style>

@@ -7,15 +7,17 @@
       <router-view v-else></router-view>
     </div>
     <div class="layout-footer">
-      <TabBar :data="state.tabBar"
+      <TabBar v-show="show"
+              :data="state.tabBar"
               @chang="handleChange"></TabBar>
     </div>
   </div>
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import TabBar from '../components/TabBar/TabBar.vue'
+import { useStore } from 'vuex'
 
 export default {
   name: 'AppLayout',
@@ -23,7 +25,9 @@ export default {
     TabBar
   },
   setup() {
+    const store = useStore()
     // tabbar选项菜单项，可以动态生成
+    let show = computed(() => store.state.showtabbar)
     const state = reactive({
       tabBar: [
         {
@@ -47,7 +51,8 @@ export default {
     }
     return {
       state,
-      handleChange
+      handleChange,
+      show
     }
   }
 }

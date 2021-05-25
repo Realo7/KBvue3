@@ -1,15 +1,17 @@
 <template>
-  <div>
+  <div class="content">
     <div v-for="item in detail"
          :key="item.id">
-      <van-field v-if="item.key!=='图片'&&item.key!=='附件'"
+      <van-field input-align="right"
+                 v-if="item.key!=='图片'&&item.key!=='附件'"
                  v-model="item.value"
                  clickable
                  readonly
                  :name="item.key"
                  :label="item.key" />
     </div>
-    <van-cell title="图片">
+    <van-cell center
+              title="图片">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #right-icon>
         <van-grid :border="false"
@@ -158,3 +160,13 @@ export default {
   }
 }
 </script>
+
+<style lang='scss' scoped>
+.content {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 90vh;
+  padding: 46px 20px 20px;
+  background: #fff;
+}
+</style>

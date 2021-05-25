@@ -131,8 +131,8 @@ export default {
           if (res.result) {
             console.log('获取的列表' + res.result.list)
             result.list = res.result.list
-            console.log('--------' + result.list[0].listNo)
-            detail(result.list[0].listNo)
+            active.value = result.list[0].listNo
+            detail()
           }
         })
         .catch(err => {
@@ -183,7 +183,6 @@ export default {
           detailResult.value = res.result
           console.log(detailResult.value)
           for (let item of detailResult.value) {
-            console.log(item)
             switch (item.type) {
               case '图片':
                 let imgsrr = JSON.parse(item.value)
