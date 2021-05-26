@@ -15,17 +15,7 @@ module.exports = {
       warnings: false,
       errors: true,
     },
-    // proxy: {
-    //   //配置跨域
-    //   '/api': {
-    //       target: "https://test.xxx.com",
-    //       // ws:true,
-    //       changOrigin:true,
-    //       pathRewrite:{
-    //           '^/api':'/'
-    //       }
-    //   }
-    // }
+    
   },
   chainWebpack: (config) => {
     config.resolve.alias

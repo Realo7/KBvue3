@@ -64,6 +64,7 @@ export default {
           // 进入H5的登录界面
           // 测试环境注释掉
           if (store.state.qhid == '' || store.state.qhusername == '') {
+            // 生产环境添加
             router.push({
               path: '/h5login'
             })
@@ -75,8 +76,8 @@ export default {
     // H5环境获取用户信息(之前需要跑一次钉钉环境获取信息)
     // eslint-disable-next-line no-unused-vars
     const h5GetUser = () => {
-      const userId = process.env.VUE_APP_USERID
-      const accessToken = process.env.VUE_APP_ACCESSTOKEN
+      const userId = '28590759431053373'
+      const accessToken = '2a95308b8c58337289392c5e4e4052b2'
       const data = { userId, accessToken }
       store
         .dispatch('forceGetUserInfo', data)

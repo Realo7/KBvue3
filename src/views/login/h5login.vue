@@ -82,7 +82,7 @@ export default {
           state.password = ''
           state.showloading = false
           Notify('登录失败，请检测网络通信')
-          console.log(err)
+          console.log(JSON.stringify(err))
         })
     }
     onMounted(() => {

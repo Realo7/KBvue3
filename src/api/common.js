@@ -11,11 +11,9 @@ export function getUserList() {
 // 钉钉jsapi 鉴权
 export function authenticate(url) {
   return axios({
-    url: '/jsapi_signature',
+    url: '/api/oa/Dingtalk/config',
     method: 'post',
-    data: {
-      url,
-    },
+    params:{url},
   });
 }
 
