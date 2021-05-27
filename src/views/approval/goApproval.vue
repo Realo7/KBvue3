@@ -1,5 +1,11 @@
 <template>
-  <div style="margin: 100px 15px 0px 15px">
+  <div style="height: 100px; text-align: center">
+    <van-button icon="plus" type="primary" @click="dingChoose()">摇人</van-button>
+    <br />
+    <br />
+    <van-button icon="plus" type="primary" @click="goDing">发通知</van-button>
+  </div>
+  <div style="margin: 0px 15px 0px 15px">
     <van-field
       v-model="kindPicker.name"
       readonly
@@ -180,6 +186,7 @@
         @cancel="state.danjuKind = false"
       />
     </van-popup>
+    <!-- 选择单据号的弹窗 -->
     <van-popup v-model:show="state.danjuNum" position="bottom">
       <van-picker
         :columns="danjuNumColumns"
@@ -188,14 +195,15 @@
         @cancel="state.danjuNum = false"
       />
     </van-popup>
-    <!-- 选择单据号的弹窗 -->
+    <!-- dialog -->
     <van-dialog
       v-model:show="state.showdialog"
       title="提示"
       show-cancel-button
       style="text-align: center"
       confirm-button-text="前往首页"
-      cancel-button-text="返回"
+      cancel-button-text="去通知"
+      @cancel="goDing"
       @confirm="gohomepage"
     >
       <van-loading v-show="state.isloading" />
@@ -209,7 +217,7 @@ import { ref, onBeforeMount, onMounted, reactive, nextTick, computed, watch } fr
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { Notify, Dialog } from 'vant'
-import { contactChoose, chooseusersFromPart, test } from '@/util/dingtalk.js'
+import { contactChoose, chooseUserFromPart, GoDing20 } from '@/util/dingtalk.js'
 import {
   querryDanjuKind,
   querryDanjuNum,
@@ -223,6 +231,7 @@ import {
 } from '@/api/kaoqin.js'
 import moment from 'moment'
 import { getUser } from '@/api/home'
+import config from '@/config/index.js'
 // @ is an alias to /src
 
 export default {
@@ -606,15 +615,37 @@ export default {
       getCompany()
       getDanjuKind()
     })
+    // 摇人功能
     const dingChoose = async () => {
-      // chooseusersFromPart(window.location.href)
-      let rew = await test(window.location.href)
-      console.log(JSON.stringify(rew))
+      //上线修改
+      let rew = await chooseUserFromPart(config.maeiURL)
+        .then(res => {
+          console.log(res)
+          //获取选中人的数组
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
-    onMounted(() => {
-      dingChoose()
-    })
+    // 通知功能
+    const goDing = async () => {
+      console.log(config.maeiURL)
+      let rew = await GoDing20(config.maeiURL)
+        .then(res => {
+          console.log(res)
+
+          router.replace({
+            path: '/home'
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    onMounted(() => {})
     return {
+      goDing,
+      dingChoose,
       passmsg,
       otherFileList,
       fileList,

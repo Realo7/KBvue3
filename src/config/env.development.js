@@ -4,6 +4,8 @@ module.exports = {
   baseApi: '/c/',
   // 钉钉公司ID
   corpId: 'ding4acdfb4fff883932',
+  AgentId:1186278641,
+  maeiURL:'http://47.103.209.223:5311/'
   // H5端调试用
   // accessToken: '2a95308b8c58337289392c5e4e4052b2',
   // 钉钉userId调试用
