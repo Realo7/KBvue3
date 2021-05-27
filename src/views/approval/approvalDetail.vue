@@ -1,43 +1,36 @@
 <template>
   <div class="content">
-    <div v-for="item in detail"
-         :key="item.id">
-      <van-field input-align="right"
-                 v-if="item.key!=='图片'&&item.key!=='附件'"
-                 v-model="item.value"
-                 clickable
-                 readonly
-                 :name="item.key"
-                 :label="item.key" />
+    <div v-for="item in detail" :key="item.id">
+      <van-field
+        input-align="right"
+        v-if="item.key !== '图片' && item.key !== '附件'"
+        v-model="item.value"
+        clickable
+        readonly
+        :name="item.key"
+        :label="item.key"
+      />
     </div>
-    <van-cell center
-              title="图片">
+    <van-cell center title="图片">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #right-icon>
-        <van-grid :border="false"
-                  :column-num="2">
-          <van-grid-item v-for="item in imgList"
-                         :key="item">
-            <van-image width="100"
-                       height="100"
-                       :src="item.relativePath" />
+        <van-grid :border="false" :column-num="2">
+          <van-grid-item v-for="item in imgList" :key="item">
+            <van-image width="100" height="100" :src="item.relativePath" />
           </van-grid-item>
         </van-grid>
-
       </template>
     </van-cell>
     <van-cell title="附件">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #default>
-        <div v-for="item in fileList"
-             :key="item">
-          <a :href="item.relativePath">{{item.oldName}}-------</a>
+        <div v-for="item in fileList" :key="item">
+          <a :href="item.relativePath">{{ item.oldName }}-------</a>
         </div>
       </template>
       <template #right-icon>
-        <div v-for="item in fileList"
-             :key="item">
-          <div>大小:{{item.fileSize}}</div>
+        <div v-for="item in fileList" :key="item">
+          <div>大小:{{ item.fileSize }}</div>
         </div>
       </template>
     </van-cell>
@@ -50,6 +43,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { detailquerry, detailRecordTable, detailRecord } from '@/api/kaoqin.js'
 import { Notify, Dialog } from 'vant'
+import config from '../../config'
 export default {
   setup() {
     const store = useStore()
@@ -90,7 +84,7 @@ export default {
                   console.log(imgsrr)
                   for (let i = 0; i < imgsrr.length; i++) {
                     imgsrr[i].relativePath =
-                      'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/imgs/' + imgsrr[i].relativePath
+                      config.baseApi + '/api/oa/myApplicationInquiry/imgs/' + imgsrr[i].relativePath
                     imgList.value.push(imgsrr[i])
                   }
                   break
@@ -99,14 +93,13 @@ export default {
                   console.log(filesrr)
                   for (let i = 0; i < filesrr.length; i++) {
                     filesrr[i].relativePath =
-                      'http://192.168.8.117:8080/MES_System/api/oa/myApplicationInquiry/downloadFile/' +
+                      config.baseApi +
+                      '/api/oa/myApplicationInquiry/downloadFile/' +
                       filesrr[i].relativePath +
                       '/' +
                       filesrr[i].oldName
-
                     fileList.value.push(filesrr[i])
                   }
-
                   break
                 case 'applyCompanyName':
                   break
@@ -161,7 +154,7 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .content {
   box-sizing: border-box;
   width: 100%;

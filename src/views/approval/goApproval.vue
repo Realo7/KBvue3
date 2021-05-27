@@ -1,11 +1,11 @@
 <template>
-  <div style="height: 100px; text-align: center">
+  <!-- <div style="height: 100px; text-align: center">
     <van-button icon="plus" type="primary" @click="dingChoose()">摇人</van-button>
     <br />
     <br />
     <van-button icon="plus" type="primary" @click="goDing">发通知</van-button>
-  </div>
-  <div style="margin: 0px 15px 0px 15px">
+  </div> -->
+  <div style="margin: 100px 15px 0px 15px">
     <van-field
       v-model="kindPicker.name"
       readonly
@@ -216,7 +216,7 @@
 import { ref, onBeforeMount, onMounted, reactive, nextTick, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { Notify, Dialog } from 'vant'
+import { Notify, Dialog, Toast } from 'vant'
 import { contactChoose, chooseUserFromPart, GoDing20 } from '@/util/dingtalk.js'
 import {
   querryDanjuKind,
@@ -630,17 +630,22 @@ export default {
     // 通知功能
     const goDing = async () => {
       console.log(config.maeiURL)
-      let rew = await GoDing20(config.maeiURL)
-        .then(res => {
-          console.log(res)
-
-          router.replace({
-            path: '/home'
+      // 判断是钉钉环境的话
+      if ((store.state.isInDing = false)) {
+        let rew = await GoDing20(config.maeiURL)
+          .then(res => {
+            console.log(res)
+            Toast.success('通知成功，请等待审批')
+            router.replace({
+              path: '/home'
+            })
           })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+          .catch(err => {
+            console.log(err)
+          })
+      } else {
+        Toast('当前不是钉钉环境，无法发送钉钉通知')
+      }
     }
     onMounted(() => {})
     return {

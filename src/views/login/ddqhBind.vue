@@ -1,31 +1,27 @@
 <template>
-
   <!-- 本界面用于绑定钉钉和琦航账号 -->
   <div class="content">
-    <van-notice-bar left-icon="volume-o"
-                    :text="noticetext" />
-    <van-cell title="当前钉钉对应手机号"
-              :value="nowmobile" />
+    <van-notice-bar left-icon="volume-o" :text="noticetext" />
+    <van-cell title="当前钉钉对应手机号" :value="nowmobile" />
 
     <van-form @submit="onSubmit">
-      <van-field v-model="state.username"
-                 name="用户名"
-                 label="用户名"
-                 placeholder="用户名"
-                 :rules="[{ required: true, message: '请填写用户名' }]" />
-      <van-field v-model="state.password"
-                 type="password"
-                 name="密码"
-                 label="密码"
-                 placeholder="密码"
-                 :rules="[{ required: true, message: '请填写密码' }]" />
-      <div style="margin: 16px;">
-        <van-button round
-                    block
-                    type="primary"
-                    native-type="submit">
-          绑定
-        </van-button>
+      <van-field
+        v-model="state.username"
+        name="用户名"
+        label="用户名"
+        placeholder="用户名"
+        :rules="[{ required: true, message: '请填写用户名' }]"
+      />
+      <van-field
+        v-model="state.password"
+        type="password"
+        name="密码"
+        label="密码"
+        placeholder="密码"
+        :rules="[{ required: true, message: '请填写密码' }]"
+      />
+      <div style="margin: 16px">
+        <van-button round block type="primary" native-type="submit"> 绑定 </van-button>
       </div>
     </van-form>
   </div>
@@ -35,8 +31,10 @@ import { reactive, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { updateUserwithDD } from '@/api/user.js'
 import { Dialog, Toast } from 'vant'
+import { useRouter } from 'vue-router'
 export default {
   setup() {
+    const router = useRouter()
     const noticetext = computed(() => {
       return store.state.username + '欢迎登录，请绑定您的琦航账号。'
     })
@@ -66,7 +64,7 @@ export default {
           } else {
             Dialog.alert({
               title: '提示',
-              message: '点击确定返回主页'
+              message: '点击确定前往主页'
             }).then(() => {
               router.push({
                 path: '/'

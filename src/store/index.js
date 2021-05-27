@@ -13,7 +13,8 @@ export default createStore({
     qhusername:'',//琦航对应的用户名
     qhroleId:0,
     test:'1',
-    showtabbar:true
+    showtabbar:true,
+    isInDing:true
   },
   mutations: {
     getUserNmae(state, data) {

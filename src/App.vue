@@ -25,6 +25,7 @@ export default {
       // 1.获取钉钉临时授权码
       getAuthCode(process.env.VUE_APP_CORPID)
         .then(rew => {
+          sotore.state.isInDing = true
           Notify('获取钉钉成功进入钉钉环境' + rew.code)
           console.log(rew)
           // 存入store
@@ -42,7 +43,6 @@ export default {
               store.state.avatar = res.result.avatar
               localStorage.setItem('accessToken', res.result.accessToken)
               console.log(`app.vue里面获取${store}`)
-
               // 3.然后查询是否绑定qh账号
               querrybind(res.result.mobile, res.result.userid)
             })
@@ -59,6 +59,7 @@ export default {
             })
         })
         .catch(err => {
+          store.state.isInDing = false
           // 说明没有进入钉钉环境
           console.log('进入H5虚拟环境')
           // 进入H5的登录界面
