@@ -7,7 +7,7 @@
       <van-tabbar-item v-for="(item,index) in data"
                        :to="item.to"
                        :key="index"
-                       :icon="item.icon">{{item.title}}</van-tabbar-item>
+                       :icon="item.icon"> {{item.title}} </van-tabbar-item>
     </van-tabbar>
   </div>
 </template>

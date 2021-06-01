@@ -21,11 +21,16 @@ export default {
     // 钉钉环境登录获取用户信息
     // eslint-disable-next-line no-unused-vars
     const HomegetAuthCode = () => {
+      console.log(process.env.VUE_APP_CORPID)
       console.log(process.env.NODE_ENV)
+
       // 1.获取钉钉临时授权码
       getAuthCode(process.env.VUE_APP_CORPID)
         .then(rew => {
-          sotore.state.isInDing = true
+          console.log(rew)
+          console.log('sadasdasd')
+          store.state.isInDing = true
+          console.log(rew.code)
           Notify('获取钉钉成功进入钉钉环境' + rew.code)
           console.log(rew)
           // 存入store
