@@ -3,9 +3,8 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 const routes = [
   {
     path: '/',
-    name: 'Home',
     component: () => import('./../layout/index.vue'),
-    redirect: '/home',
+    redirect: '/h5login',
     meta: {
       title: '首页',
       keepAlive: false

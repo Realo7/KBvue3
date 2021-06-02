@@ -6,206 +6,200 @@
     <van-button icon="plus" type="primary" @click="goDing">发通知</van-button>
   </div> -->
   <div style="margin: 100px 15px 0px 15px">
-    <van-field
-      v-model="kindPicker.name"
-      readonly
-      clickable
-      name="picker"
-      label="申请类型"
-      placeholder="点击选择申请类型"
-      @click="state.showPicker1 = true"
-    />
-    <van-empty v-if="key_value == ''" description="暂时没有该申请单的字段"> </van-empty>
+    <van-field v-model="kindPicker.name"
+               readonly
+               clickable
+               name="picker"
+               label="申请类型"
+               placeholder="点击选择申请类型"
+               @click="state.showPicker1 = true" />
+    <van-empty v-if="key_value == ''"
+               description="暂时没有该申请单的字段"> </van-empty>
     <van-form @submit="onSubmit">
       <div v-show="key_value != ''">
-        <van-field
-          v-model="CompanyPicker.companyName"
-          readonly
-          clickable
-          name="company"
-          label="选择公司"
-          placeholder="点击选择公司"
-          @click="state.showCompany = true"
-        />
-        <van-field
-          v-model="groupPicker.name"
-          readonly
-          clickable
-          name="Group"
-          label="选择部门"
-          placeholder="点击选择部门"
-          @click="state.showGroup = true"
-        />
-        <van-field
-          v-model="memberPicker.userName"
-          readonly
-          clickable
-          name="Member"
-          label="选择人员"
-          placeholder="点击选择人员"
-          @click="state.showMember = true"
-        />
+        <van-field v-model="CompanyPicker.companyName"
+                   readonly
+                   clickable
+                   name="company"
+                   label="选择公司"
+                   placeholder="点击选择公司"
+                   @click="state.showCompany = true" />
+        <van-field v-model="groupPicker.name"
+                   readonly
+                   clickable
+                   name="Group"
+                   label="选择部门"
+                   placeholder="点击选择部门"
+                   @click="state.showGroup = true" />
+        <van-field v-model="memberPicker.userName"
+                   readonly
+                   clickable
+                   name="Member"
+                   label="选择人员"
+                   placeholder="点击选择人员"
+                   @click="state.showMember = true" />
       </div>
       <!-- item.type==='时间'?dateclick(item,index):state.showPicker2=false -->
-      <van-field
-        v-for="(item, index) in key_value"
-        :key="item.id"
-        v-model="item.value"
-        clickable
-        :type="item.type == '整数' ? 'digit' : 'text'"
-        :readonly="item.type == '时间' || item.type == '日期+时间' || item.type == '日期'"
-        @click="chooseinputType(item, index)"
-        :name="item.key"
-        :label="item.key"
-        :placeholder="`请填写${item.key}`"
-        :rules="[{ required: true, message: `请填写${item.key}` }]"
-      />
+      <van-field v-for="(item, index) in key_value"
+                 :key="item.id"
+                 v-model="item.value"
+                 clickable
+                 :type="item.type == '整数' ? 'digit' : 'text'"
+                 :readonly="item.type == '时间' || item.type == '日期+时间' || item.type == '日期'"
+                 @click="chooseinputType(item, index)"
+                 :name="item.key"
+                 :label="item.key"
+                 :placeholder="`请填写${item.key}`"
+                 :rules="[{ required: true, message: `请填写${item.key}` }]" />
 
       <!-- 报销单据 -->
-      <van-collapse v-show="key_value != ''" v-model="state.showReimbursement" accordion>
-        <van-collapse-item title="相关报表" name="1">
+      <van-collapse v-show="key_value != ''"
+                    v-model="state.showReimbursement"
+                    accordion>
+        <van-collapse-item title="相关报表"
+                           name="1">
           <div v-if="temTable != ''">
             <!-- :readonly="item.type=='时间'||item.type=='日期+时间'||item.type=='日期'" -->
-            <van-field
-              v-for="item in temTable"
-              :key="item.id"
-              v-model="item.value"
-              :label="item.key"
-              :placeholder="`请填写${item.key}`"
-            />
+            <van-field v-for="item in temTable"
+                       :key="item.id"
+                       v-model="item.value"
+                       :label="item.key"
+                       :placeholder="`请填写${item.key}`" />
           </div>
           <div v-if="temTable == ''">当前申请没有对应报销表单</div>
         </van-collapse-item>
       </van-collapse>
       <!-- 关联单据 -->
-      <van-collapse v-show="key_value != ''" v-model="state.showReimbursement" accordion>
-        <van-collapse-item title="关联单据" name="2">
-          <van-field
-            v-model="kindPicker.danjuKind"
-            readonly
-            clickable
-            label="单据类型"
-            placeholder="选择单据类型"
-            @click="state.danjuKind = true"
-          />
-          <van-field
-            v-model="kindPicker.danjuNum"
-            readonly
-            clickable
-            label="单据类型"
-            placeholder="选择单据类型"
-            @click="state.danjuNum = true"
-          />
+      <van-collapse v-show="key_value != ''"
+                    v-model="state.showReimbursement"
+                    accordion>
+        <van-collapse-item title="关联单据"
+                           name="2">
+          <van-field v-model="kindPicker.danjuKind"
+                     readonly
+                     clickable
+                     label="单据类型"
+                     placeholder="选择单据类型"
+                     @click="state.danjuKind = true" />
+          <van-field v-model="kindPicker.danjuNum"
+                     readonly
+                     clickable
+                     label="单据类型"
+                     placeholder="选择单据类型"
+                     @click="state.danjuNum = true" />
         </van-collapse-item>
       </van-collapse>
       <!-- 上传图片 -->
-      <van-field name="uploader" label="上传图片" v-show="key_value != ''">
+      <van-field name="uploader"
+                 label="上传图片"
+                 v-show="key_value != ''">
         <template #input>
-          <van-uploader max-size="5242880" v-model="fileList" :after-read="afterRead" />
+          <van-uploader max-size="5242880"
+                        v-model="fileList"
+                        :after-read="afterRead" />
         </template>
       </van-field>
       <!-- 上传文件 -->
-      <van-field name="uploadfiles" label="上传文件" v-show="key_value != ''">
+      <van-field name="uploadfiles"
+                 label="上传文件"
+                 v-show="key_value != ''">
         <template #input>
-          <van-uploader max-size="10485760" accept="image/*,.pdf,.doc.,rar,.zip,.docx" v-model="otherFileList">
-            <van-button icon="plus" type="primary">上传文件</van-button>
+          <van-uploader max-size="10485760"
+                        accept="image/*,.pdf,.doc.,rar,.zip,.docx"
+                        v-model="otherFileList">
+            <van-button icon="plus"
+                        type="primary">上传文件</van-button>
           </van-uploader>
         </template>
       </van-field>
       <!-- 提交按钮 -->
-      <div v-if="key_value != ''" style="margin: 16px">
-        <van-button round block type="primary" native-type="submit"> 提交 </van-button>
+      <div v-if="key_value != ''"
+           style="margin: 16px">
+        <van-button round
+                    block
+                    type="primary"
+                    native-type="submit"> 提交 </van-button>
       </div>
     </van-form>
 
     <!-- 选择人员 -->
-    <van-popup v-model:show="state.showMember" position="bottom">
-      <van-picker
-        :columns="memberColumns"
-        :columns-field-names="customMemFieldName"
-        @confirm="onMemberConfirm"
-        @cancel="state.showMember = false"
-      />
+    <van-popup v-model:show="state.showMember"
+               position="bottom">
+      <van-picker :columns="memberColumns"
+                  :columns-field-names="customMemFieldName"
+                  @confirm="onMemberConfirm"
+                  @cancel="state.showMember = false" />
     </van-popup>
     <!-- 选择部门 -->
-    <van-popup v-model:show="state.showGroup" position="bottom">
-      <van-picker
-        :columns="groupColumns"
-        :columns-field-names="customGroFieldName"
-        @confirm="onGroupConfirm"
-        @cancel="state.showGroup = false"
-      />
+    <van-popup v-model:show="state.showGroup"
+               position="bottom">
+      <van-picker :columns="groupColumns"
+                  :columns-field-names="customGroFieldName"
+                  @confirm="onGroupConfirm"
+                  @cancel="state.showGroup = false" />
     </van-popup>
     <!-- 选择公司 -->
-    <van-popup v-model:show="state.showCompany" position="bottom">
-      <van-picker
-        :columns="companyColumns"
-        :columns-field-names="customComFieldName"
-        @confirm="onCompanyConfirm"
-        @cancel="state.showCompany = false"
-      />
+    <van-popup v-model:show="state.showCompany"
+               position="bottom">
+      <van-picker :columns="companyColumns"
+                  :columns-field-names="customComFieldName"
+                  @confirm="onCompanyConfirm"
+                  @cancel="state.showCompany = false" />
     </van-popup>
     <!-- 选择申请类型 -->
-    <van-popup v-model:show="state.showPicker1" position="bottom">
-      <van-picker
-        :columns="columns"
-        :columns-field-names="customFieldName"
-        @confirm="onConfirm"
-        @cancel="state.showPicker1 = false"
-      />
+    <van-popup v-model:show="state.showPicker1"
+               position="bottom">
+      <van-picker :columns="columns"
+                  :columns-field-names="customFieldName"
+                  @confirm="onConfirm"
+                  @cancel="state.showPicker1 = false" />
     </van-popup>
 
     <!-- //选择年月日的弹窗 -->
-    <van-popup v-model:show="state.showPicker2" position="bottom">
-      <van-datetime-picker
-        v-model="currentDate"
-        type="date"
-        title="选择年月日"
-        :min-date="minDate"
-        @confirm="onDataConfirm"
-        @cancel="state.showPicker2 = false"
-      />
+    <van-popup v-model:show="state.showPicker2"
+               position="bottom">
+      <van-datetime-picker v-model="currentDate"
+                           type="date"
+                           title="选择年月日"
+                           :min-date="minDate"
+                           @confirm="onDataConfirm"
+                           @cancel="state.showPicker2 = false" />
     </van-popup>
     <!-- 选择年月日时间的弹窗 -->
-    <van-popup v-model:show="state.showPicker3" position="bottom">
-      <van-datetime-picker
-        v-model="dateandtime"
-        type="datetime"
-        title="选择年月日时间"
-        :min-date="minDate"
-        @confirm="onDataTimeConfirm"
-        @cancel="state.showPicker3 = false"
-      />
+    <van-popup v-model:show="state.showPicker3"
+               position="bottom">
+      <van-datetime-picker v-model="dateandtime"
+                           type="datetime"
+                           title="选择年月日时间"
+                           :min-date="minDate"
+                           @confirm="onDataTimeConfirm"
+                           @cancel="state.showPicker3 = false" />
     </van-popup>
     <!-- 选择单据类型的弹窗 -->
-    <van-popup v-model:show="state.danjuKind" position="bottom">
-      <van-picker
-        :columns="danjuKindColumns"
-        :columns-field-names="customdanjuKindName"
-        @confirm="ondanjuConfirm"
-        @cancel="state.danjuKind = false"
-      />
+    <van-popup v-model:show="state.danjuKind"
+               position="bottom">
+      <van-picker :columns="danjuKindColumns"
+                  :columns-field-names="customdanjuKindName"
+                  @confirm="ondanjuConfirm"
+                  @cancel="state.danjuKind = false" />
     </van-popup>
     <!-- 选择单据号的弹窗 -->
-    <van-popup v-model:show="state.danjuNum" position="bottom">
-      <van-picker
-        :columns="danjuNumColumns"
-        :columns-field-names="customdanjuNumName"
-        @confirm="ondanjuNumConfirm"
-        @cancel="state.danjuNum = false"
-      />
+    <van-popup v-model:show="state.danjuNum"
+               position="bottom">
+      <van-picker :columns="danjuNumColumns"
+                  :columns-field-names="customdanjuNumName"
+                  @confirm="ondanjuNumConfirm"
+                  @cancel="state.danjuNum = false" />
     </van-popup>
     <!-- dialog -->
-    <van-dialog
-      v-model:show="state.showdialog"
-      title="提示"
-      show-cancel-button
-      style="text-align: center"
-      confirm-button-text="前往首页"
-      cancel-button-text="去通知"
-      @cancel="goDing"
-      @confirm="gohomepage"
-    >
+    <van-dialog v-model:show="state.showdialog"
+                title="提示"
+                show-cancel-button
+                style="text-align: center"
+                confirm-button-text="前往首页"
+                cancel-button-text="去通知"
+                @cancel="goDing"
+                @confirm="gohomepage">
       <van-loading v-show="state.isloading" />
       <div v-show="!state.isloading">{{ passmsg }}</div>
     </van-dialog>
@@ -339,7 +333,6 @@ export default {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
           } else {
-            console.log(res)
             danjuKindColumns.value = res.result
           }
         })
@@ -439,7 +432,7 @@ export default {
     //选择申请类型弹窗确认
     const onConfirm = value => {
       console.log(value)
-      kindPicker.name = value.name
+      kindPicker.name = value.typeName
       kindPicker.activitiKey = value.activitiKey
       kindPicker.pickerid = value.formTemplateId
       kindPicker.id = value.id
@@ -537,6 +530,7 @@ export default {
           if (res.code != 200) {
             Notify({ type: 'waring', message: res.msg })
           } else {
+            console.log(res.result)
             columns.value = res.result
           }
         })
