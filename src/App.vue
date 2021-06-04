@@ -5,9 +5,9 @@
 <script>
 import { ref, onBeforeMount, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
-import { getAuthCode } from '@/util/dingtalk'
+
 import { useRouter } from 'vue-router'
-import { bindUserwithDD } from '@/api/user.js'
+
 import { Dialog, Notify } from 'vant'
 import config from '@/config/index.js'
 import { getlarkAuthCode } from '@/util/lark'
@@ -18,21 +18,16 @@ export default {
   setup() {
     const store = useStore()
     const router = useRouter()
-    const getcode = () => {
-      getlarkAuthCode()
-        .then(res => {
-          Notify(res)
-          console.log(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    const testFS = () => {
+      window.h5sdk.ready(() => {
+        //  lark.ready参数为回调函数，在环境准备就绪时触发
+        alert('ok')
+      })
     }
-
-    onBeforeMount(() => {
-      getcode()
+    onBeforeMount(() => {})
+    onMounted(() => {
+      testFS()
     })
-    onMounted(() => {})
 
     return {}
   }

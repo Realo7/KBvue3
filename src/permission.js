@@ -53,9 +53,8 @@ router.beforeEach(async (to, from) => {
     //先判断是否dd环境
     getAuthCode(process.env.VUE_APP_CORPID)
       .then(rew => {
-        console.log('________________________' + rew)
-        //   是钉钉环境
         if (rew) {
+          //   是钉钉环境
           store.state.isInDing = true
           Notify({ type: 'primary', message: '成功进入钉钉环境' })
           store.state.authCode = rew.code
